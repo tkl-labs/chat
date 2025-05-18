@@ -54,6 +54,7 @@ export default function RecordPage() {
               gap: 2,
             }}
           >
+            <h1 className="text-3xl font-bold underline">Hello world!</h1>
             <Box
               sx={{
                 flex: 1,
