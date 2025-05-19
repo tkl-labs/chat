@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17.5
+    restart: always
+    container_name: postgres_db
+    env_file:
+      - .env
+    volumes:
+      - ./schema/postgres:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+
+  cassandra:
+    image: cassandra:5.0.4
+    container_name: cassandra_db
+    ports:
+      - 9042:9042
+    environment:
+      - CASSANDRA_CLUSTER_NAME=Chat
+      - CASSANDRA_START_RPC=true
+    volumes:
+      - cassdata:/var/lib/cassandra
+
+  cassandra-init:
+    image: cassandra:5.0.4
+    depends_on:
+      - cassandra
+    volumes:
+      - ./schema/cassandra:/init
+    entrypoint: >
+      bash -c "
+      until cqlsh cassandra -e 'describe keyspaces'; do
+        echo 'Waiting for Cassandra...';
+        sleep 5;
+      done;
+      cqlsh cassandra -f /init/init.cql"
+
+volumes:
+  pgdata:
+  cassdata:
