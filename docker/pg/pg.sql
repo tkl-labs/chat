@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto"; -- For gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto; -- For gen_random_uuid()
 
 CREATE TABLE "user" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
