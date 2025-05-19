@@ -13,7 +13,7 @@ export type User = {
 export type Group = {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   created_at: string;
   created_by: string;
   is_dm: boolean;
