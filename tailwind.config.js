@@ -1,5 +1,9 @@
-export default {
-  content: ['./src/app/*/*.{tsx}'],
+/** @type {import('tailwindcss').Config} */
+const config = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
@@ -17,4 +21,7 @@ export default {
       },
     },
   },
-}
+  plugins: [],
+};
+
+export default config;

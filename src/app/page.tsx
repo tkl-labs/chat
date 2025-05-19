@@ -1,185 +1,103 @@
-"use client";
+import Image from "next/image";
 
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { useRouter } from "next/navigation";
-import {
-  Button,
-  Container,
-  Typography,
-  Paper,
-  Box,
-  CssBaseline,
-  Divider,
-} from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-
-export default function WelcomePage() {
-  const router = useRouter();
-  const [imageSrc, setImageSrc] = useState<string>("");
-
-  const handleGetStarted = () => {
-    router.push("/record");
-  };
-
-  async function handleGetImage() {
-    try {
-      const base64Img: string = await invoke("get_image");
-      setImageSrc(`data:image/png;base64,${base64Img}`);
-    } catch (error) {
-      console.error("Failed to get image:", error);
-    }
-  }
-
+export default function Home() {
   return (
-    <>
-      <CssBaseline />
-      <Container
-        maxWidth="xl"
-        sx={{
-          height: "100vh",
-          bgcolor: "#2C2F33",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          px: 2,
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            backgroundColor: "#23272A",
-            p: { xs: 4, md: 6 },
-            borderRadius: 3,
-            border: "2px solid #5865F2",
-            maxWidth: 900,
-            width: "100%",
-            boxShadow: "0em 0.1875em 0.375em rgba(0,0,0,0.16)",
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" }, // Stack on small screens
-            gap: 4,
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+          <li className="mb-2 tracking-[-.01em]">
+            Get started by editing{" "}
+            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
+              src/app/page.tsx
+            </code>
+            .
+          </li>
+          <li className="tracking-[-.01em]">
+            Save and see your changes instantly.
+          </li>
+        </ol>
+
+        <div className="flex gap-4 items-center flex-col sm:flex-row">
+          <a
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Deploy now
+          </a>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read our docs
+          </a>
+        </div>
+      </main>
+      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {/* Left box: Welcome */}
-          <Box
-            sx={{
-              flex: 1,
-              color: "#fff",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: { xs: "center", md: "flex-start" },
-              textAlign: { xs: "center", md: "left" },
-              minWidth: 0,
-            }}
-          >
-            <Typography
-              variant="h4"
-              component="h1"
-              gutterBottom
-              fontWeight="bold"
-            >
-              Welcome to
-            </Typography>
-            <Typography
-              variant="h2"
-              component="h1"
-              gutterBottom
-              fontWeight="bold"
-            >
-              TKL Chat!
-            </Typography>
-
-            <Typography
-              variant="h6"
-              sx={{ color: "#99AAB5", mb: 4, fontWeight: 500 }}
-            >
-              Your all-in-one presentation and collaboration platform.
-            </Typography>
-
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleGetStarted}
-              sx={{
-                backgroundColor: "#5865F2",
-                color: "#fff",
-                fontWeight: "bold",
-                px: 4,
-                alignSelf: { xs: "center", md: "flex-start" },
-                "&:hover": {
-                  backgroundColor: "#4752c4",
-                },
-              }}
-              endIcon={<ArrowForwardIcon />}
-            >
-              Get Started
-            </Button>
-          </Box>
-
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{
-              borderColor: "#5865F2",
-              opacity: 0.3,
-              display: { xs: "none", md: "block" },
-            }}
+          <Image
+            aria-hidden
+            src="/file.svg"
+            alt="File icon"
+            width={16}
+            height={16}
           />
-
-          {/* Right box: Capture test */}
-          <Box
-            sx={{
-              flex: 1,
-              color: "#99AAB5",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              minWidth: 0,
-            }}
-          >
-            <Typography variant="h6" mb={2}>
-              Want to test a capture?
-            </Typography>
-
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleGetImage}
-              sx={{
-                backgroundColor: "#5865F2",
-                color: "#fff",
-                fontWeight: "bold",
-                px: 4,
-                mb: 4,
-                "&:hover": {
-                  backgroundColor: "#4752c4",
-                },
-              }}
-              endIcon={<CameraAltIcon />}
-            >
-              Capture
-            </Button>
-
-            {imageSrc && (
-              <Box
-                component="img"
-                src={imageSrc}
-                alt="Generated from Tauri"
-                sx={{ maxWidth: "100%", borderRadius: 2 }}
-              />
-            )}
-          </Box>
-        </Paper>
-
-        <Box mt={4} color="#99AAB5" fontSize="0.9rem">
-          &copy; {new Date().getFullYear()} TKL. All rights reserved.
-        </Box>
-      </Container>
-    </>
+          Learn
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/window.svg"
+            alt="Window icon"
+            width={16}
+            height={16}
+          />
+          Examples
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="Globe icon"
+            width={16}
+            height={16}
+          />
+          Go to nextjs.org →
+        </a>
+      </footer>
+    </div>
   );
 }
