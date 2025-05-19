@@ -10,6 +10,7 @@ import {
   CssBaseline,
 } from "@mui/material";
 
+
 export default function RecordPage() {
   const [value, setValue] = React.useState(0);
 
@@ -27,34 +28,10 @@ export default function RecordPage() {
   return (
     <>
       <CssBaseline />
-      <Container
-        maxWidth="xl"
-        sx={{
-          backgroundColor: "#2C2F33",
-          minHeight: "100vh",
-          py: 4,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            height: "75vh",
-            gap: 2,
-          }}
-        >
-          <Box
-            sx={{
-              flexBasis: "25%",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
-          >
-            <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
+      <div className="max-w-full min-h-screen py-8 flex justify-center items-center bg-primary-background">
+        <div className="flex w-full h-[75vh] gap-4">
+          <div className="flex basis-[25%] flex-col gap-4">
             <Box
               sx={{
                 flex: 1,
@@ -66,6 +43,8 @@ export default function RecordPage() {
                 boxShadow: elevation3Shadow,
               }}
             >
+            <div className="flex-auto bg-[#23272A] text-white-900"></div>
+            
               <Typography variant="h5" fontWeight="bold" mb={2} color="#fff">
                 Primary Source
               </Typography>
@@ -86,8 +65,7 @@ export default function RecordPage() {
                 Secondary Source
               </Typography>
             </Box>
-          </Box>
-
+          </div>
           <Box
             sx={{
               flexBasis: "75%",
@@ -153,8 +131,8 @@ export default function RecordPage() {
               <Typography variant="body1">{tabContents[value]}</Typography>
             </Box>
           </Box>
-        </Box>
-      </Container>
+        </div>
+      </div>
     </>
   );
 }
