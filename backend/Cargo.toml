@@ -3,6 +3,9 @@ name = "backend"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "backend"
+path = "src/lib.rs"
 
 [[bin]]
 name = "client"
@@ -11,7 +14,6 @@ path = "src/client.rs"
 [[bin]]
 name = "server"
 path = "src/server.rs"
-
 
 [dependencies]
 # tokio = { version = "1.45.0", features = ["rt-multi-thread", "io-std", "io-util", "macros", "time", "test-util", "fs", "sync", "process", "net"] }

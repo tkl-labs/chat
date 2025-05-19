@@ -51,3 +51,11 @@ Thumbs.db
 *.local
 *.bak
 *.tmp
+
+
+
+
+# chat backend rust
+backend/target/
+
+
