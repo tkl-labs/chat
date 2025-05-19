@@ -1,8 +1,7 @@
 {
   "name": "tkl-chat",
-  "private": true,
   "version": "0.1.0",
-  "type": "module",
+  "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -11,26 +10,22 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.1.0",
-    "@mui/material": "^7.1.0",
-    "@tailwindcss/postcss": "^4.1.7",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
-    "next": "^15.3.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "next": "15.3.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
-    "@types/node": "22.15.18",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.7",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.3"
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.7",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
