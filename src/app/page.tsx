@@ -6,6 +6,7 @@ import {
   type ButtonHTMLAttributes,
 } from "react";
 import { MessageCircle, Send, User, Menu, Search } from "lucide-react";
+import Link from "next/link";
 
 type AvatarProps = {
   children?: ReactNode;
@@ -122,7 +123,10 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-      <div className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <div
+        className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 
+                  font-[family-name:var(--font-geist-sans)]"
+      >
         <main className="flex flex-col gap-[32px] items-center sm:items-start max-w-md mx-auto">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-8 h-8" />
@@ -130,13 +134,20 @@ export default function Home() {
           </div>
 
           <p className="text-xl text-center sm:text-left">
-            A modern, fast, and secure chat application built with Next.js
+            A modern, fast, and secure chat application built with Next.js +
+            Rust
           </p>
 
-          <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+          <ol
+            className="list-inside list-decimal text-sm/6 text-center sm:text-left 
+          font-[family-name:var(--font-geist-mono)]"
+          >
             <li className="mb-2 tracking-[-.01em]">
               Real-time messaging with{" "}
-              <code className="bg-[var(--muted-bg)] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
+              <code
+                className="bg-[var(--muted-bg)] px-1 py-0.5 rounded 
+              font-[family-name:var(--font-geist-mono)] font-semibold"
+              >
                 end-to-end encryption
               </code>
             </li>
@@ -149,15 +160,20 @@ export default function Home() {
           </ol>
 
           <div className="flex gap-4 items-center flex-col sm:flex-row">
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-[var(--foreground)] text-[var(--background)] gap-2 hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-              href="#"
+            <Link
+              href={"/dashboard"}
+              className="rounded-full border border-solid border-transparent transition-colors flex items-center 
+              justify-center bg-[var(--foreground)] text-[var(--background)] gap-2 hover:bg-[var(--hover-dark)] 
+              dark:hover:bg-[var(--hover-light-mode)] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 
+              sm:w-auto"
             >
               <MessageCircle className="w-5 h-5" />
               Get Started
-            </a>
+            </Link>
             <a
-              className="rounded-full border border-solid border-[var(--border-color)] transition-colors flex items-center justify-center hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
+              className="rounded-full border border-solid border-[var(--border-color)] transition-colors 
+              flex items-center justify-center hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] 
+              hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
               href="#"
             >
               Learn More
@@ -227,7 +243,10 @@ export default function Home() {
               </div>
 
               <div className="flex items-start gap-2 justify-end">
-                <div className="bg-[var(--foreground)] text-[var(--background)] p-3 rounded-lg rounded-tr-none max-w-[80%]">
+                <div
+                  className="bg-[var(--foreground)] text-[var(--background)] p-3 rounded-lg rounded-tr-none 
+                max-w-[80%]"
+                >
                   <p className="text-sm">
                     Hi! I am interested in learning more about the features of
                     TKL-CHAT.
