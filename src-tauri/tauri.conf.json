@@ -12,7 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "TKL Chat"
+        "title": "TKL Chat",
+        "backgroundColor": "#2e2e2e",
+        "center": true
       }
     ],
     "security": {
