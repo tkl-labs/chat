@@ -161,7 +161,7 @@ export default function Home() {
 
           <div className="flex gap-4 items-center flex-col sm:flex-row">
             <Link
-              href={"/dashboard"}
+              href={"/register"}
               className="rounded-full border border-solid border-transparent transition-colors flex items-center 
               justify-center bg-[var(--foreground)] text-[var(--background)] gap-2 hover:bg-[var(--hover-dark)] 
               dark:hover:bg-[var(--hover-light-mode)] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 
