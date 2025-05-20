@@ -18,7 +18,11 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run cargo fmt
-        run: cargo fmt
+        run: |
+          cd backend
+          cargo fmt
+          cd ../src-tauri
+          cargo fmt
 
       - name: Commit changes
         run: |
