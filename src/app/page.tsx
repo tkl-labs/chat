@@ -199,7 +199,7 @@ export default function Home() {
             </a>
           </div>
           <p className="text-sm text-[var(--muted-foreground)]">
-            © {new Date().getFullYear()} All rights reserved TKL-CHAT
+            © {new Date().getFullYear()} TKL. All rights reserved.
           </p>
         </footer>
       </div>

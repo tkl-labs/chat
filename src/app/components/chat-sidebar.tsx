@@ -176,13 +176,17 @@ export default function ChatSidebar() {
         )}
       </div>
       <div className="p-2">
-        <button
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[var(--foreground)]
-        text-[var(--background)] rounded-md hover:bg-[var(--hover-dark)] transition-colors"
+        <Link
+          href="/chat/new"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2
+            bg-[var(--foreground)] text-[var(--background)] rounded-md 
+            hover:bg-[var(--hover-dark)] 
+            dark:hover:bg-[var(--hover-light-mode)]
+            transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>New Chat</span>
-        </button>
+        </Link>
       </div>
 
       <div className="p-2 border-t border-[var(--border-color)]">
@@ -190,7 +194,7 @@ export default function ChatSidebar() {
           <Link
             href="/profile"
             className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
-             dark:hover:bg-[var(--hover-dark-mode))] transition-colors"
+             dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
               <span className="text-white text-sm font-medium">U</span>
@@ -199,7 +203,6 @@ export default function ChatSidebar() {
           </Link>
 
           <div className="flex">
-            
             <Link
               href="/settings"
               className="p-2 rounded-md hover:bg-[var(--hover-light)]
@@ -211,7 +214,7 @@ export default function ChatSidebar() {
             <button
               onClick={handleLogOut}
               className="p-2 rounded-md hover:bg-[var(--hover-light)]
-             dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
+             dark:hover:bg-[var(--hover-dark-mode)] transition-colors cursor-pointer"
             >
               <LogOut className="w-5 h-5" />
             </button>

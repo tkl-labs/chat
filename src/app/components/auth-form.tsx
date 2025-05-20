@@ -8,7 +8,6 @@ import {
   Phone,
   Lock,
   ArrowRight,
-  ShowerHeadIcon,
 } from "lucide-react";
 import { useNotification } from "./notification-provider";
 import { useRouter } from "next/navigation";
@@ -26,7 +25,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -339,7 +338,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           <div className="mt-8 text-center">
             <p className="text-[var(--muted-foreground)]">
               {mode === "login"
-                ? "Don't have an account"
+                ? "Don't have an account?"
                 : "Already have an account?"}
               <Link
                 href={mode === "login" ? "/register" : "/login"}
@@ -370,8 +369,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           <p className="text-[var(--muted-foreground)] mb-8">
             {mode === "login"
               ? `Connect with your friends, family, and colleagues securely with end to end 
-                encryption.`
-              : `Create an account to enjoy secure messaging, group chats, and more with TKL-CHAT.`}
+                encryption`
+              : `Create an account to enjoy secure messaging, group chats, and more with TKL-CHAT`}
           </p>
 
           <div className="space-y-4">

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { type NotificationType } from "@/lib/notification-store";
 import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from "lucide-react";
-import { warn } from "console";
 
 export type NotificationProps = {
   type: NotificationType;
