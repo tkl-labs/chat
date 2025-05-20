@@ -5,6 +5,18 @@
 
 version: 2
 updates:
+  # backend Rust project
+  - package-ecosystem: "cargo"
+    directory: "/backend/" # location of cargo.toml
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope" # Adds the package name to the commit scope
+
+  # frontend Rust project
   - package-ecosystem: "cargo"
     directory: "/src-tauri/" # location of cargo.toml
     schedule:
@@ -15,6 +27,7 @@ updates:
       prefix: "chore"
       include: "scope" # Adds the package name to the commit scope
 
+  # frontend Next.JS project
   - package-ecosystem: "npm"
     directory: "/" # location of package.json
     schedule:
