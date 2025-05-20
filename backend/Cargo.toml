@@ -22,3 +22,8 @@ tokio-tungstenite = { version = "0.26.2", features = ["default", "connect", "han
 tungstenite = "0.26.2"
 url = "2"
 futures-util = "0.3"
+
+diesel = { version = "2.2.10" }
+diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
+
+
