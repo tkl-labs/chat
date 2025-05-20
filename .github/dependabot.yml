@@ -5,8 +5,18 @@
 
 version: 2
 updates:
-  - package-ecosystem: "cargo" # See documentation for possible values
-    directory: "/src-tauri/" # Location of package manifests
+  - package-ecosystem: "cargo"
+    directory: "/src-tauri/" # location of cargo.toml
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore"
+      include: "scope" # Adds the package name to the commit scope
+
+  - package-ecosystem: "npm"
+    directory: "/" # location of package.json
     schedule:
       interval: "weekly"
       day: "sunday"
