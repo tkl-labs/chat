@@ -1,11 +1,11 @@
-use backend::database::init::initi_pool;
+use backend::database::init::init_pool;
 
 #[tokio::main]
 async fn main() {
-    let result = initi_pool().await;
+    let result = init_pool().await;
 
     match result {
         Err(e) => eprintln!("{}", e),
-        Ok(_) => println!("connected"),
+        Ok(_) => println!("connection pool created"),
     }
 }

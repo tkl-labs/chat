@@ -16,14 +16,11 @@ name = "server"
 path = "src/server.rs"
 
 [dependencies]
-# tokio = { version = "1.45.0", features = ["rt-multi-thread", "io-std", "io-util", "macros", "time", "test-util", "fs", "sync", "process", "net"] }
+diesel = { version = "2.2.10" }
+diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
+dotenv = "0.15.0"
+futures-util = "0.3"
 tokio = { version = "1.45.0", features = ["full"] }
 tokio-tungstenite = { version = "0.26.2", features = ["default", "connect", "handshake", "stream", "url"] }
 tungstenite = "0.26.2"
 url = "2"
-futures-util = "0.3"
-
-diesel = { version = "2.2.10" }
-diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
-
-

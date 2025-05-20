@@ -1,11 +1,16 @@
 use diesel_async::AsyncPgConnection;
 use diesel_async::pooled_connection::AsyncDieselConnectionManager;
 use diesel_async::pooled_connection::deadpool::{BuildError, Pool};
+use dotenv::dotenv;
+use std::env;
 
-const postgres_string: &str = "postgres://postgres:postgres@127.0.0.1:5432/tkl-chat";
+pub async fn init_pool() -> Result<Pool<AsyncPgConnection>, BuildError> {
+    dotenv().ok(); // load .env
 
-pub async fn initi_pool() -> Result<Pool<AsyncPgConnection>, BuildError> {
-    let pool_config = AsyncDieselConnectionManager::<AsyncPgConnection>::new(postgres_string);
+    let database_url =
+        env::var("DATABASE_URL").expect("ERROR: DATABASE_URL must be present in '.env'");
+
+    let pool_config = AsyncDieselConnectionManager::<AsyncPgConnection>::new(&database_url);
     let pool_result = Pool::builder(pool_config).build();
 
     let pool = match pool_result {
