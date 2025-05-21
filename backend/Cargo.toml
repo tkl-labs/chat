@@ -16,6 +16,9 @@ name = "server"
 path = "src/server.rs"
 
 [dependencies]
+# actix-web = { version = "4.11.0", features = ["websockets"] }
+actix-web = { version = "4" }
+actix-ws = "0.3"
 diesel = { version = "2.2.10", features = ["postgres", "uuid"] }
 diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
 dotenv = "0.15.0"
