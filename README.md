@@ -12,6 +12,15 @@ Please note that Docker containers must be running unless you are hosting the ap
 docker compose -f "compose.yaml" up -d
 ```
 
+### Initialising the database using diesel
+
+```bash
+cargo install diesel_cli --no-default-features --features postgres
+# important: at this point, you should have defined the DATABASE_URL variable in `.env`
+diesel setup
+diesel migration run
+```
+
 ### Completely removing Docker containers and related volumes
 
 ```bash
