@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import {
   MessageCircle,
-  MessageSquarePlus,
   Search,
   Users,
   Settings,
@@ -27,21 +26,21 @@ export default function ChatSidebar() {
       try {
         // Use the same mock data as the chat page
         const mockData = await getMockData();
-        
+
         // Transform DM group names to show only the other person's name
-        const transformedGroups = mockData.groups.map(group => {
+        const transformedGroups = mockData.groups.map((group) => {
           if (group.is_dm) {
             // Extract just the other person's name from "Koushic Sumathi Kumar & Other Name"
-            const nameParts = group.name.split(' & ');
+            const nameParts = group.name.split(" & ");
             const otherPersonName = nameParts[1] || nameParts[0];
             return {
               ...group,
-              name: otherPersonName
+              name: otherPersonName,
             };
           }
           return group;
         });
-        
+
         setGroups(transformedGroups);
       } catch (error) {
         console.log("Error fetching groups:", error);
