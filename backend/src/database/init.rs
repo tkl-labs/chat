@@ -4,11 +4,10 @@ use diesel_async::pooled_connection::deadpool::{BuildError, Object, Pool};
 use dotenv::dotenv;
 use std::{env, usize};
 
-pub async fn init_pool(max_size: usize) -> Result<Pool<AsyncPgConnection>, BuildError> {
-    dotenv().ok();
-
 pub type PGPool = Pool<AsyncPgConnection>;
 
+pub async fn init_pool(max_size: usize) -> Result<PGPool, BuildError> {
+    dotenv().ok();
 
     let database_url =
         env::var("DATABASE_URL").expect("ERROR: DATABASE_URL must be present in '.env'");
