@@ -265,6 +265,7 @@ dependencies = [
  "diesel-async",
  "dotenv",
  "futures-util",
+ "serde",
  "tokio-tungstenite",
  "tungstenite",
  "url",

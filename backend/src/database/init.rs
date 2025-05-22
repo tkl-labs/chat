@@ -5,7 +5,7 @@ use dotenv::dotenv;
 use std::{env, usize};
 
 pub async fn init_pool(max_size: usize) -> Result<Pool<AsyncPgConnection>, BuildError> {
-    dotenv().ok(); 
+    dotenv().ok();
 
     let database_url =
         env::var("DATABASE_URL").expect("ERROR: DATABASE_URL must be present in '.env'");
@@ -18,21 +18,18 @@ pub async fn init_pool(max_size: usize) -> Result<Pool<AsyncPgConnection>, Build
         Ok(value) => value,
     };
 
-
     let mut connections = Vec::<Object<AsyncPgConnection>>::new();
-
 
     for _ in 0..max_size {
         let connection = pool.get().await;
 
         match connection {
             Err(e) => panic!("{}", e),
-            Ok(con ) => connections.push(con),
+            Ok(con) => connections.push(con),
         };
-    };
+    }
 
     drop(connections);
-
 
     return Ok(pool);
 }
