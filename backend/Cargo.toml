@@ -8,22 +8,23 @@ name = "backend"
 path = "src/lib.rs"
 
 [[bin]]
-name = "client"
-path = "src/client.rs"
-
-[[bin]]
 name = "server"
 path = "src/server.rs"
 
 [dependencies]
-# tokio = { version = "1.45.0", features = ["rt-multi-thread", "io-std", "io-util", "macros", "time", "test-util", "fs", "sync", "process", "net"] }
-tokio = { version = "1.45.0", features = ["full"] }
+# actix-web = { version = "4.11.0", features = ["websockets"] }
+actix-web = { version = "4.11.0" }
+actix-ws = "0.3"
+bcrypt = "0.17.0"
+chrono = { version = "0.4.41", features = ["serde"] }
+diesel = { version = "2.2.10", features = ["chrono", "postgres", "uuid"] }
+diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
+dotenv = "0.15.0"
+futures-util = "0.3"
+regex = "1.11.1"
+serde = { version = "1.0.219", features = ["derive"] }
+# tokio = { version = "1.45.0", features = ["full"] }
 tokio-tungstenite = { version = "0.26.2", features = ["default", "connect", "handshake", "stream", "url"] }
 tungstenite = "0.26.2"
 url = "2"
-futures-util = "0.3"
-
-diesel = { version = "2.2.10" }
-diesel-async = { version = "0.5.2", features = ["postgres", "pool", "deadpool"] }
-
-
+uuid = { version = "1.16.0", features = ["v4"] }

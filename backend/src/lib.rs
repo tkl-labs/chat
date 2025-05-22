@@ -1,4 +1,5 @@
-pub mod apis;
-pub(crate) mod chat_infrastructure;
-
 pub mod database;
+pub mod models;
+pub mod schema;
+
+pub mod actix;
