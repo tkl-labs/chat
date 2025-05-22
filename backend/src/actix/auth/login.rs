@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, get, post, web};
+use actix_web::http::header::ContentType;
 use diesel::{BoolExpressionMethods, ExpressionMethods, query_dsl::methods::FilterDsl};
 use diesel_async::RunQueryDsl;
 use regex::Regex;
@@ -39,7 +40,9 @@ pub async fn post_login(req_body: web::Json<LoginForm>, pool: web::Data<PGPool>)
     let email_meets_requirements = email_re.is_match(&username_or_email);
 
     if !username_meets_requirements && !email_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid login");
+        return HttpResponse::Unauthorized()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid login"}"#)
     }
 
     // sanitise password
@@ -54,16 +57,22 @@ pub async fn post_login(req_body: web::Json<LoginForm>, pool: web::Data<PGPool>)
         && (num_re.is_match(&password))
         && (special_re.is_match(&password));
     if !password_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid login details");
+        return HttpResponse::Unauthorized()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid login"}"#)
     }
 
     // attempt to insert new user into db
     let outcome = check_user_in_db(pool, username_or_email, password).await;
 
     if outcome {
-        return HttpResponse::Ok().body("logged in successfully");
+        return HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"logged in successfully"}"#)
     } else {
-        return HttpResponse::BadRequest().body("invalid login details");
+        return HttpResponse::Unauthorized()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid login"}"#)
     }
 }
 

@@ -6,14 +6,14 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devUrl": "http://localhost:3000",
+    "devUrl": "http://127.0.0.1:3000",
     "frontendDist": "../out"
   },
   "app": {
     "windows": [
       {
         "title": "TKL Chat",
-        "backgroundColor": "#2e2e2e",
+        "backgroundColor": "#0a0a0a",
         "center": true
       }
     ],

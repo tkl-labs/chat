@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, get, post, web};
+use actix_web::http::header::ContentType;
 use diesel::dsl::insert_into;
 use diesel_async::RunQueryDsl;
 use regex::Regex;
@@ -44,7 +45,9 @@ pub async fn post_register(
         && (username.chars().all(char::is_alphanumeric));
 
     if !username_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid username");
+        return HttpResponse::BadRequest()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid username"}"#)
     }
 
     // sanitise password
@@ -59,28 +62,36 @@ pub async fn post_register(
         && (num_re.is_match(&password))
         && (special_re.is_match(&password));
     if !password_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid password");
+        return HttpResponse::BadRequest()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid password"}"#)
     }
 
     // sanitise email
     let email_re = Regex::new(EMAIL_REGEX).unwrap();
     let email_meets_requirements = email_re.is_match(&email);
     if !email_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid email");
+        return HttpResponse::BadRequest()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid email"}"#)
     }
 
     // sanitise phone number
     let phone_re = Regex::new(PHONE_NUMBER_REGEX).unwrap();
     let phone_number_meets_requirements = phone_re.is_match(&phone_number);
     if !phone_number_meets_requirements {
-        return HttpResponse::BadRequest().body("invalid phone number");
+        return HttpResponse::BadRequest()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"invalid phone number"}"#)
     }
 
     // create hash of user password
     let password_hash = match bcrypt::hash(password, 10) {
         Err(e) => {
             eprintln!("{}", e);
-            return HttpResponse::InternalServerError().body("internal error");
+            return HttpResponse::InternalServerError()
+                .content_type(ContentType::json())
+                .body(r#"{"detail":"something went wrong"}"#)
         }
         Ok(password_hash) => password_hash,
     };
@@ -88,7 +99,9 @@ pub async fn post_register(
     // attempt to insert new user into db
     add_user_to_db(pool, username, email, phone_number, &password_hash).await;
 
-    return HttpResponse::Ok().body("account created successfully");
+    return HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body(r#"{"detail":"account created successfully"}"#)
 }
 
 pub async fn add_user_to_db(
