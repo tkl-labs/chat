@@ -96,18 +96,14 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
 
     if (mode === "register") {
       try {
-        const response = await api.post("/auth/register/", {
+        const response = await api.post("/auth/register", {
           username: formData.username,
           email: formData.email,
           phone_number: formData.phone_number,
           password: formData.password,
         });
 
-        showNotification(
-          "success",
-          response.data?.detail,
-          "Account created!"
-        );
+        showNotification("success", response.data?.detail, "Account created!");
 
         router.push("/dashboard");
       } catch (error: any) {
@@ -121,16 +117,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     }
 
     try {
-      const response = await api.post("/auth/login/", {
+      const response = await api.post("/auth/login", {
         username_or_email: formData.email,
         password: formData.password,
       });
 
-      showNotification(
-        "success",
-        response.data?.detail,
-        "Welcome back!"
-      );
+      showNotification("success", response.data?.detail, "Welcome back!");
 
       router.push("/dashboard");
     } catch (error: any) {

@@ -12,6 +12,7 @@ name = "server"
 path = "src/server.rs"
 
 [dependencies]
+actix-cors = "0.7.1"
 # actix-web = { version = "4.11.0", features = ["websockets"] }
 actix-web = { version = "4.11.0" }
 actix-ws = "0.3"
