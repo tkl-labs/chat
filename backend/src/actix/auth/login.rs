@@ -5,6 +5,18 @@ use actix_web::{HttpResponse, Responder, get, post};
 #[get("/login")]
 pub async fn get_login() -> impl Responder {
     HttpResponse::Ok().body("hit get-login, serve login page here")
+use actix_web::{get, post, HttpResponse, Responder, web};
+
+
+use crate::database::init::PGPool;
+
+#[get("/login")]
+pub async fn get_login(pool: web::Data<PGPool>) -> impl Responder {
+    let conn = pool.get().await.expect("failed to acquire db connection");
+    println!("connection made");
+
+
+    HttpResponse::Ok().body("hit get-login")
 }
 
 #[post("/login")]

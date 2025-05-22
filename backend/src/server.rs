@@ -8,13 +8,18 @@ use std::io::{Error, ErrorKind};
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let result = init_pool(5).await;
-    match result {
-        Err(e) => {
+
+    let pool = match result {
+        Err(e) => { 
             eprintln!("{}", e);
             return Err(Error::new(ErrorKind::Other, e));
+        },
+        Ok(pool) => { 
+            println!("connection pool created");
+            pool
         }
-        Ok(_) => println!("connection pool created"),
     };
 
-    actix::start_server().await
+    let x = actix::start_server(pool).await;
+    return x;
 }

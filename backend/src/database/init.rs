@@ -7,13 +7,16 @@ use std::{env, usize};
 pub async fn init_pool(max_size: usize) -> Result<Pool<AsyncPgConnection>, BuildError> {
     dotenv().ok();
 
+pub type PGPool = Pool<AsyncPgConnection>;
+
+
     let database_url =
         env::var("DATABASE_URL").expect("ERROR: DATABASE_URL must be present in '.env'");
 
     let pool_config = AsyncDieselConnectionManager::<AsyncPgConnection>::new(&database_url);
     let pool_result = Pool::builder(pool_config).max_size(max_size).build();
 
-    let pool = match pool_result {
+    let pool: PGPool = match pool_result {
         Err(e) => return Err(e),
         Ok(value) => value,
     };
