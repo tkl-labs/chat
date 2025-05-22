@@ -5,8 +5,8 @@
   "identifier": "com.tkl-chat.app",
   "build": {
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:3000",
     "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:3000",
     "frontendDist": "../out"
   },
   "app": {

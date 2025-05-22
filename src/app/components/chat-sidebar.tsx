@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react";
 import {
   MessageCircle,
+  MessageSquarePlus,
   Search,
   Users,
-  Plus,
   Settings,
   LogOut,
+  MessageCirclePlus,
 } from "lucide-react";
 import { Group } from "@/lib/db-types";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import ChatSidebarSkeleton from "./skeletons";
+import { getMockData } from "@/lib/mock-data";
 
 export default function ChatSidebar() {
   const pathname = usePathname();
@@ -22,42 +25,24 @@ export default function ChatSidebar() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        // Simulating API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const mockGroups: Group[] = [
-          {
-            id: "1",
-            name: "War Council",
-            description: "GOATS",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: false,
-          },
-          {
-            id: "2",
-            name: "War Council but BETTER",
-            description: "GOATS SQUARED",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: false,
-          },
-          {
-            id: "3",
-            name: "Lewis Rye",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: true,
-          },
-          {
-            id: "4",
-            name: "Taisei Yokoshima",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: true,
-          },
-        ];
-        setGroups(mockGroups);
+        // Use the same mock data as the chat page
+        const mockData = await getMockData();
+        
+        // Transform DM group names to show only the other person's name
+        const transformedGroups = mockData.groups.map(group => {
+          if (group.is_dm) {
+            // Extract just the other person's name from "Koushic Sumathi Kumar & Other Name"
+            const nameParts = group.name.split(' & ');
+            const otherPersonName = nameParts[1] || nameParts[0];
+            return {
+              ...group,
+              name: otherPersonName
+            };
+          }
+          return group;
+        });
+        
+        setGroups(transformedGroups);
       } catch (error) {
         console.log("Error fetching groups:", error);
       } finally {
@@ -82,12 +67,26 @@ export default function ChatSidebar() {
     }
   };
 
+  if (loading) {
+    return <ChatSidebarSkeleton />;
+  }
+
   return (
-    <div className="w-64 h-screen flex flex-col border-r border-[var(--border-color)]">
+    <div className="w-screen sm:w-64 h-screen flex flex-col border-r border-[var(--border-color)]">
       <div className="p-4 border-b border-[var(--border-color)]">
-        <div className="flex items-center gap-2">
-          <MessageCircle className="w-6 h-6 text-[var(--foreground)]" />
-          <h1 className="text-xl font-bold">TKL-CHAT</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MessageCircle className="w-6 h-6 text-[var(--foreground)]" />
+            <h1 className="text-xl font-bold">TKL-CHAT</h1>
+          </div>
+          <Link
+            href="/chat/new"
+            className="sm:hidden p-2 rounded-md hover:bg-[var(--hover-light)]
+             dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
+            aria-label="Start new chat"
+          >
+            <MessageCirclePlus className="w-5 h-5" />
+          </Link>
         </div>
       </div>
 
@@ -99,7 +98,7 @@ export default function ChatSidebar() {
           />
           <input
             type="text"
-            placeholder="Seach chats..."
+            placeholder="Search chats..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-[var(--border-color)] rounded-md
@@ -109,11 +108,7 @@ export default function ChatSidebar() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-2">
-        {loading ? (
-          <div className="flex items-center justify-center h-20">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--foreground)]"></div>
-          </div>
-        ) : filteredGroups.length > 0 ? (
+        {filteredGroups.length > 0 ? (
           <div className="space-y-1">
             <div className="px-2 py-1 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
               Groups
@@ -170,27 +165,16 @@ export default function ChatSidebar() {
           </div>
         ) : (
           <div className="text-center py-4 text-[var(--muted-foreground)]">
-            {" "}
             No chats found
           </div>
         )}
       </div>
-      <div className="p-2">
-        <button
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[var(--foreground)]
-        text-[var(--background)] rounded-md hover:bg-[var(--hover-dark)] transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Chat</span>
-        </button>
-      </div>
-
       <div className="p-2 border-t border-[var(--border-color)]">
         <div className="flex items-center justify-between">
           <Link
             href="/profile"
             className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
-             dark:hover:bg-[var(--hover-dark-mode))] transition-colors"
+             dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
               <span className="text-white text-sm font-medium">U</span>
@@ -199,7 +183,6 @@ export default function ChatSidebar() {
           </Link>
 
           <div className="flex">
-            
             <Link
               href="/settings"
               className="p-2 rounded-md hover:bg-[var(--hover-light)]
@@ -211,7 +194,7 @@ export default function ChatSidebar() {
             <button
               onClick={handleLogOut}
               className="p-2 rounded-md hover:bg-[var(--hover-light)]
-             dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
+             dark:hover:bg-[var(--hover-dark-mode)] transition-colors cursor-pointer"
             >
               <LogOut className="w-5 h-5" />
             </button>

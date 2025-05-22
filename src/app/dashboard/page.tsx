@@ -7,7 +7,7 @@ export default function Dashboard() {
       <div className="max-w-md text-center">
         <h1 className="text-2xl font-bold mb-2"> Welcome to TKL-CHAT</h1>
         <p className="text-[var(--muted-foreground)] mb-6">
-          Select a chat from the sidebar to start a new conversation
+          Select a chat from the sidebar or start a new conversation
         </p>
         <Link
           href="/chat/new"

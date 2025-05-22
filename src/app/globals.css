@@ -12,6 +12,8 @@
   --hover-dark: #383838;
   --hover-dark-mode: #1a1a1a;
   --hover-light-mode: #ccc;
+  --error-border-color: #ef4444;
+  --success-border-color: #22c55e;
 }
 
 @theme inline {
@@ -27,7 +29,9 @@
     --foreground: #ededed;
     --muted-bg: rgba(255, 255, 255, 0.06);
     --muted-foreground: #a3a3a3;
-    --border-color: rgba(255, 255, 255, 0.145);
+    --border-color: rgba(255, 255, 255, 0.145); 
+    --error-border-color: #f87171;
+    --success-border-color: #4ade80;
   }
 }
 

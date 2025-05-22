@@ -8,7 +8,7 @@ export default function NotFound() {
         <SearchXIcon className="w-44 h-44" />
         <h1 className="text-2xl font-bold mb-2">404 - Page Not Found</h1>
         <p className="text-[var(--muted-foreground)] mb-6">
-          This page doesn't exist. Try checking the URL or go back home.
+          This page doesn&quot;t exist. Try checking the URL or go back home.
         </p>
         <Link
           href="/dashboard"

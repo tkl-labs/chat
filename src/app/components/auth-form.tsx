@@ -8,11 +8,13 @@ import {
   Phone,
   Lock,
   ArrowRight,
-  ShowerHeadIcon,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { useNotification } from "./notification-provider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import api from "@/lib/axios";
 
 type FormMode = "login" | "register";
 
@@ -26,43 +28,117 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [touchedFields, setTouchedFields] = useState({
+    username: false,
+    password: false,
+    confirmPassword: false,
+    email: false,
+    phone_number: false,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setTouchedFields((prev) => ({ ...prev, [name]: true }));
   };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value: inputValue } = e.target;
+
+    let value = e.target.value;
+
+    if (!value.startsWith("+")) {
+      value = "+" + value.replace(/\+/g, "");
+    }
+
+    value = "+" + value.slice(1).replace(/\D/g, "");
+
+    setFormData((prev) => ({ ...prev, phone_number: value }));
+    setTouchedFields((prev) => ({ ...prev, [name]: true }));
+  };
+
+  const isValidUsername = (username: string) => {
+    return /^[a-zA-Z0-9]{8,16}$/.test(username);
+  };
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const isValidPhoneNumber = (phone: string) => {
+    return /^\+?[0-9]{7,15}$/.test(phone);
+  };
+
+  const isValidPassword = (password: string) => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,64}$/.test(
+      password
+    );
+  };
+
+  const doPasswordsMatch = (password: string, confirmPassword: string) => {
+    return password === confirmPassword;
+  };
+
+  const isFormValid =
+    isValidUsername(formData.username) &&
+    isValidEmail(formData.email) &&
+    isValidPhoneNumber(formData.phone_number) &&
+    isValidPassword(formData.password) &&
+    doPasswordsMatch(formData.password, formData.confirmPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    // Temp login for Message Template
+    localStorage.setItem("user-email", formData.email);
+
     if (mode === "register") {
-      if (formData.password !== formData.confirmPassword) {
+      try {
+        const response = await api.post("/auth/register/", {
+          username: formData.username,
+          email: formData.email,
+          phone_number: formData.phone_number,
+          password: formData.password,
+        });
+
         showNotification(
-          "error",
-          "The passwords you entered do not match. Please try again.",
-          "Password Mismatch"
+          "success",
+          response.data?.detail,
+          "Account created!"
         );
+
+        router.push("/dashboard");
+      } catch (error: any) {
+        const message = error.response?.data?.detail || "Registration failed.";
+        showNotification("error", message, "Error");
+      } finally {
         setLoading(false);
-        return;
       }
+
+      return;
     }
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await api.post("/auth/login/", {
+        username_or_email: formData.email,
+        password: formData.password,
+      });
+
       showNotification(
         "success",
-        mode === "login"
-          ? "You have successfully signed in to your account."
-          : "Your account has been created successfully. Welcome to TKL-CHAT!",
-        mode === "login" ? "Welcome back!" : "Account created!"
+        response.data?.detail,
+        "Welcome back!"
       );
 
-      // Redirect to dashboard
       router.push("/dashboard");
-    }, 1000);
+    } catch (error: any) {
+      const message = error.response?.data?.detail || "Login failed.";
+      showNotification("error", message, "Error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,8 +189,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.email}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+                      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+                      text-[var(--foreground)] font-medium"
                       placeholder="Enter your email or username"
                       required
                     />
@@ -144,8 +221,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.password}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+                      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+                      text-[var(--foreground)] font-medium"
                       placeholder="Enter your password"
                       required
                     />
@@ -163,12 +241,10 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                   </label>
 
                   <div className="relative">
-                    <div
-                      className="absolute inset-y-0 left-0 pl-3 flex items-center
-                                        pointer-events-none"
-                    >
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className="h-5 w-5 text-[var(--muted-foreground)]" />
                     </div>
+
                     <input
                       id="username"
                       name="username"
@@ -176,12 +252,41 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       autoComplete="username"
                       value={formData.username}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
+                      focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                      ${
+                        touchedFields.username
+                          ? isValidUsername(formData.username)
+                            ? "border-[var(--success-border-color)]"
+                            : "border-[var(--error-border-color)]"
+                          : "border-[var(--border-color)] focus:ring-[var(--foreground)]"
+                      }
+                    `}
                       placeholder="Choose a username"
                       required
                     />
+                  </div>
+                  <div className="mt-3 m-1 text-left">
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.username &&
+                          isValidUsername(formData.username)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.username
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.username &&
+                        isValidUsername(formData.username) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        8 to 16 alphanumeric characters only
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -207,12 +312,40 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       autoComplete="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
+                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        ${
+                          touchedFields.email
+                            ? isValidEmail(formData.email)
+                              ? "border-[var(--success-border-color)]"
+                              : "border-[var(--error-border-color)]"
+                            : "border-[var(--border-color)] focus:ring-[var(--foreground)]"
+                        }
+                      `}
                       placeholder="Enter your email"
                       required
                     />
+                  </div>
+                  <div className="mt-3 m-1 text-left">
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.email && isValidEmail(formData.email)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.email
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.email &&
+                        isValidUsername(formData.email) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        Email is valid
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -237,13 +370,42 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       type="tel"
                       autoComplete="tel"
                       value={formData.phone_number}
-                      onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      onChange={handlePhoneChange}
+                      className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
+                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        ${
+                          touchedFields.phone_number
+                            ? isValidPhoneNumber(formData.phone_number)
+                              ? "border-[var(--success-border-color)]"
+                              : "border-[var(--error-border-color)]"
+                            : "border-[var(--border-color)] focus:ring-[var(--foreground)]"
+                        }
+                      `}
                       placeholder="+1234567890"
                       required
                     />
+                  </div>
+                  <div className="mt-3 m-1 text-left">
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.phone_number &&
+                          isValidPhoneNumber(formData.phone_number)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.phone_number
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.phone_number &&
+                        isValidPhoneNumber(formData.phone_number) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        Phone number is valid
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -269,12 +431,112 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
-                      placeholder="Create a password"
+                      className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
+                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        ${
+                          touchedFields.password
+                            ? isValidPassword(formData.password)
+                              ? "border-[var(--success-border-color)]"
+                              : "border-[var(--error-border-color)]"
+                            : "border-[var(--border-color)] focus:ring-[var(--foreground)]"
+                        }
+                      `}
+                      placeholder="Create a strong password"
                       required
                     />
+                  </div>
+                  <div className="mt-3 m-1 text-left">
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.password &&
+                          isValidPassword(formData.password)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.password
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.password &&
+                        isValidPassword(formData.password) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        12 to 64 characters
+                      </li>
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.password &&
+                          /[a-z]/.test(formData.password)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.password
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.password &&
+                        /[a-z]/.test(formData.password) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        At least one lowercase letter
+                      </li>
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.password &&
+                          /[A-Z]/.test(formData.password)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.password
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.password &&
+                        /[A-Z]/.test(formData.password) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        At least one uppercase letter
+                      </li>
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.password && /\d/.test(formData.password)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.password
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.password &&
+                        /\d/.test(formData.password) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        At least one number
+                      </li>
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.password &&
+                          /[^a-zA-Z0-9]/.test(formData.password)
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.password
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.password &&
+                        /[^a-zA-Z0-9]/.test(formData.password) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        At least one special character
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -296,16 +558,57 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                     <input
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="confirmPassword"
+                      type="password"
                       autoComplete="new-password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+                      className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
+                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        ${
+                          touchedFields.confirmPassword
+                            ? isValidPassword(formData.password) &&
+                              doPasswordsMatch(
+                                formData.password,
+                                formData.confirmPassword
+                              )
+                              ? "border-[var(--success-border-color)]"
+                              : "border-[var(--error-border-color)]"
+                            : "border-[var(--border-color)] focus:ring-[var(--foreground)]"
+                        }
+                      `}
                       placeholder="Confirm your password"
                       required
                     />
+                  </div>
+                  <div className="mt-3 m-1 text-left">
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center gap-2 font-medium ${
+                          touchedFields.confirmPassword &&
+                          isValidPassword(formData.password) &&
+                          doPasswordsMatch(
+                            formData.password,
+                            formData.confirmPassword
+                          )
+                            ? "text-[var(--success-border-color)]"
+                            : touchedFields.confirmPassword
+                            ? "text-[var(--error-border-color)]"
+                            : "text-[var(--muted-foreground)]"
+                        }`}
+                      >
+                        {touchedFields.confirmPassword &&
+                        isValidPassword(formData.password) &&
+                        doPasswordsMatch(
+                          formData.password,
+                          formData.confirmPassword
+                        ) ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        Password is valid and matches
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -314,10 +617,16 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[var(--foreground)]
-                text-[var(--background)] rounded-lg font-medium transition-colors hover:opacity-90 focus:outline-none
-                focus:ring-2 focus:ring-offset-2 focus:ring-[var(--foreground)]"
+                disabled={loading || (mode === "register" && !isFormValid)}
+                className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors 
+                  focus:outline-none focus:ring-1 focus:ring-offset-2
+                  ${
+                    mode === "register" && !isFormValid
+                      ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                      : `bg-[var(--foreground)] cursor-pointer
+                       text-[var(--background)] hover:opacity-90 focus:ring-[var(--foreground)]`
+                  }
+                `}
               >
                 {loading ? (
                   <div
@@ -339,7 +648,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           <div className="mt-8 text-center">
             <p className="text-[var(--muted-foreground)]">
               {mode === "login"
-                ? "Don't have an account"
+                ? "Don't have an account?"
                 : "Already have an account?"}
               <Link
                 href={mode === "login" ? "/register" : "/login"}
@@ -370,8 +679,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           <p className="text-[var(--muted-foreground)] mb-8">
             {mode === "login"
               ? `Connect with your friends, family, and colleagues securely with end to end 
-                encryption.`
-              : `Create an account to enjoy secure messaging, group chats, and more with TKL-CHAT.`}
+                encryption`
+              : `Create an account to enjoy secure messaging, group chats, and more with TKL-CHAT`}
           </p>
 
           <div className="space-y-4">
@@ -391,7 +700,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             </div>
             <div className="flex items-center p-3 border border-[var(--border-color)] rounded-lg shadow-sm">
               <div
-                className="w-10 h-10 rounded-full bg-[var(--user1-color)] flex items-center justify-center
+                className="w-10 h-10 rounded-full bg-[var(--user2-color)] flex items-center justify-center
                     flex-shirnk-0"
               >
                 <User className="w-5 h-5 text-white" />
@@ -405,10 +714,10 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             </div>
             <div className="flex items-center p-3 border border-[var(--border-color)] rounded-lg shadow-sm">
               <div
-                className="w-10 h-10 rounded-full bg-[var(--user1-color)] flex items-center justify-center
+                className="w-10 h-10 rounded-full bg-[var(--foreground)] flex items-center justify-center
                     flex-shirnk-0"
               >
-                <User className="w-5 h-5 text-white" />
+                <User className="w-5 h-5 text-black" />
               </div>
               <div className="ml-3 text-left">
                 <p className="text-sm font-medium">Available everywhere</p>
