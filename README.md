@@ -6,41 +6,13 @@ A cross-platform chat room.
 
 Please note that Docker containers must be running unless you are hosting the application on a server elsewhere.
 
-### Creating Docker containers and volumes
-
-```bash
-docker compose -f "compose.yaml" up -d
-```
-
-### Initialising the database using diesel
-
-```bash
-cargo install diesel_cli --no-default-features --features postgres
-# important: at this point, you should have defined the DATABASE_URL variable in `.env`
-diesel setup
-diesel migration run
-```
-
-### Completely removing Docker containers and related volumes
-
-```bash
-docker compose -f "compose.yaml" down -v
-```
-
 ### Running the development version:
 
 ```bash
 git clone https://github.com/tkl-labs/tkl-chat.git
 cd tkl-chat
 npm i
-npm run tauri dev
-```
-
-### (FAST, BUT UNSTABLE) Building a release version:
-
-```bash
-npm i
-npm run tauri build
+npm run tauri dev # npm run tauri build for optimised release version
 ```
 
 ## Tech Stack
