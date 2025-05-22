@@ -10,11 +10,11 @@ async fn main() -> std::io::Result<()> {
     let result = init_pool(5).await;
 
     let pool = match result {
-        Err(e) => { 
+        Err(e) => {
             eprintln!("{}", e);
             return Err(Error::new(ErrorKind::Other, e));
-        },
-        Ok(pool) => { 
+        }
+        Ok(pool) => {
             println!("connection pool created");
             pool
         }
