@@ -1,20 +1,35 @@
-import { User } from "lucide-react"
+import { User } from "lucide-react";
+import Image from "next/image";
 
 type MessageProps = {
-  content: string
-  timestamp: string
-  isCurrentUser: boolean
-  senderName?: string
-  senderAvatar?: string
-}
+  content: string;
+  timestamp: string;
+  isCurrentUser: boolean;
+  senderName?: string;
+  senderAvatar?: string;
+};
 
-export default function ChatMessage({ content, timestamp, isCurrentUser, senderName, senderAvatar }: MessageProps) {
+export default function ChatMessage({
+  content,
+  timestamp,
+  isCurrentUser,
+  senderName,
+  senderAvatar,
+}: MessageProps) {
   return (
-    <div className={`flex items-start gap-2 ${isCurrentUser ? "justify-end" : ""}`}>
+    <div
+      className={`flex items-start gap-2 ${isCurrentUser ? "justify-end" : ""}`}
+    >
       {!isCurrentUser && (
         <div className="w-8 h-8 rounded-full bg-[var(--user1-color)] flex items-center justify-center flex-shrink-0 mt-1">
           {senderAvatar ? (
-            <img src={senderAvatar || "/placeholder.svg"} alt={senderName} className="w-full h-full rounded-full" />
+            <Image
+              src={senderAvatar || "/placeholder.svg"}
+              alt={senderName || "unknown user"}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-full"
+            />
           ) : (
             <User className="w-4 h-4 text-white" />
           )}
@@ -28,9 +43,17 @@ export default function ChatMessage({ content, timestamp, isCurrentUser, senderN
             : "bg-[var(--muted-bg)] rounded-tl-none"
         }`}
       >
-        {!isCurrentUser && senderName && <div className="text-xs font-medium mb-1">{senderName}</div>}
+        {!isCurrentUser && senderName && (
+          <div className="text-xs font-medium mb-1">{senderName}</div>
+        )}
         <p className="text-sm">{content}</p>
-        <span className={`text-xs ${isCurrentUser ? "text-[var(--background)]/70" : "text-[var(--muted-foreground)]"}`}>
+        <span
+          className={`text-xs ${
+            isCurrentUser
+              ? "text-[var(--background)]/70"
+              : "text-[var(--muted-foreground)]"
+          }`}
+        >
           {timestamp}
         </span>
       </div>
@@ -38,12 +61,18 @@ export default function ChatMessage({ content, timestamp, isCurrentUser, senderN
       {isCurrentUser && (
         <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center flex-shrink-0 mt-1">
           {senderAvatar ? (
-            <img src={senderAvatar || "/placeholder.svg"} alt="You" className="w-full h-full rounded-full" />
+            <Image
+              src={senderAvatar || "/placeholder.svg"}
+              alt="You"
+              width={100}
+              height={100}
+              className="w-full h-full rounded-full"
+            />
           ) : (
             <User className="w-4 h-4 text-white" />
           )}
         </div>
       )}
     </div>
-  )
+  );
 }
