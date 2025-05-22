@@ -1,7 +1,7 @@
 import type React from "react";
 import ChatSidebar from "../components/chat-sidebar";
 
-export default function DashboardLayout({
+export default function DashboardLayout({   
   children,
 }: {
   children: React.ReactNode;

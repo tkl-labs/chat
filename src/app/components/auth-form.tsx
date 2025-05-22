@@ -25,7 +25,6 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     password: "",
     confirmPassword: "",
   });
-  // const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +35,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    localStorage.setItem("user-email", formData.email);
 
     if (mode === "register") {
       if (formData.password !== formData.confirmPassword) {
@@ -112,8 +113,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.email}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Enter your email or username"
                       required
                     />
@@ -143,8 +145,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.password}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Enter your password"
                       required
                     />
@@ -176,8 +179,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.username}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Choose a username"
                       required
                     />
@@ -207,8 +211,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.email}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Enter your email"
                       required
                     />
@@ -238,8 +243,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.phone_number}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="+1234567890"
                       required
                     />
@@ -269,8 +275,9 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.password}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Create a password"
                       required
                     />
@@ -295,13 +302,14 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                     <input
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="confirmPassword"
+                      type="password"
                       autoComplete="new-password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
-                    rounded-lg focus:outline-none focus: ring-2 focus:ring-[var(--foreground)]
-                    focus:border-transparent transition-all text-[var(--foreground)] font-medium"
+      rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
+      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+      text-[var(--foreground)] font-medium"
                       placeholder="Confirm your password"
                       required
                     />
@@ -316,7 +324,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                 disabled={loading}
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[var(--foreground)]
                 text-[var(--background)] rounded-lg font-medium transition-colors hover:opacity-90 focus:outline-none
-                focus:ring-2 focus:ring-offset-2 focus:ring-[var(--foreground)]"
+                focus:ring-1 focus:ring-offset-2 focus:ring-[var(--foreground)]"
               >
                 {loading ? (
                   <div
@@ -390,7 +398,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             </div>
             <div className="flex items-center p-3 border border-[var(--border-color)] rounded-lg shadow-sm">
               <div
-                className="w-10 h-10 rounded-full bg-[var(--user1-color)] flex items-center justify-center
+                className="w-10 h-10 rounded-full bg-[var(--user2-color)] flex items-center justify-center
                     flex-shirnk-0"
               >
                 <User className="w-5 h-5 text-white" />
@@ -404,10 +412,10 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             </div>
             <div className="flex items-center p-3 border border-[var(--border-color)] rounded-lg shadow-sm">
               <div
-                className="w-10 h-10 rounded-full bg-[var(--user1-color)] flex items-center justify-center
+                className="w-10 h-10 rounded-full bg-[var(--foreground)] flex items-center justify-center
                     flex-shirnk-0"
               >
-                <User className="w-5 h-5 text-white" />
+                <User className="w-5 h-5 text-black" />
               </div>
               <div className="ml-3 text-left">
                 <p className="text-sm font-medium">Available everywhere</p>

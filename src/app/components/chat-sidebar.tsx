@@ -14,6 +14,7 @@ import { Group } from "@/lib/db-types";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ChatSidebarSkeleton from "./skeletons";
+import { getMockData } from "@/lib/mock-data";
 
 export default function ChatSidebar() {
   const pathname = usePathname();
@@ -24,42 +25,24 @@ export default function ChatSidebar() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        // Simulating API
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        const mockGroups: Group[] = [
-          {
-            id: "1",
-            name: "War Council",
-            description: "GOATS",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: false,
-          },
-          {
-            id: "2",
-            name: "War Council but BETTER",
-            description: "GOATS SQUARED",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: false,
-          },
-          {
-            id: "3",
-            name: "Lewis Rye",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: true,
-          },
-          {
-            id: "4",
-            name: "Taisei Yokoshima",
-            created_at: new Date().toISOString(),
-            created_by: "user1",
-            is_dm: true,
-          },
-        ];
-        setGroups(mockGroups);
+        // Use the same mock data as the chat page
+        const mockData = await getMockData();
+        
+        // Transform DM group names to show only the other person's name
+        const transformedGroups = mockData.groups.map(group => {
+          if (group.is_dm) {
+            // Extract just the other person's name from "Koushic Sumathi Kumar & Other Name"
+            const nameParts = group.name.split(' & ');
+            const otherPersonName = nameParts[1] || nameParts[0];
+            return {
+              ...group,
+              name: otherPersonName
+            };
+          }
+          return group;
+        });
+        
+        setGroups(transformedGroups);
       } catch (error) {
         console.log("Error fetching groups:", error);
       } finally {
@@ -115,7 +98,7 @@ export default function ChatSidebar() {
           />
           <input
             type="text"
-            placeholder="Seach chats..."
+            placeholder="Search chats..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-[var(--border-color)] rounded-md
@@ -182,7 +165,6 @@ export default function ChatSidebar() {
           </div>
         ) : (
           <div className="text-center py-4 text-[var(--muted-foreground)]">
-            {" "}
             No chats found
           </div>
         )}
