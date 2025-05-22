@@ -26,7 +26,7 @@ pub async fn init_pool(max_size: usize) -> Result<Pool<AsyncPgConnection>, Build
         let connection = pool.get().await;
 
         match connection {
-            Err(_) => panic!("could not connect"),
+            Err(e) => panic!("{}", e),
             Ok(con ) => connections.push(con),
         };
     };
