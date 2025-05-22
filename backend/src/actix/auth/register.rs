@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, get, post, web};
-use diesel::{dsl::insert_into, numeric_expr};
+use diesel::dsl::insert_into;
 use diesel_async::RunQueryDsl;
 use regex::Regex;
 use serde::Deserialize;
@@ -33,7 +33,6 @@ pub async fn post_register(
     pool: web::Data<PGPool>,
 ) -> impl Responder {
     // TODO: send http 409 if the user already exists
-    // TODO: send http 500 for internal server error
 
     let username = &req_body.username.trim();
     let email = &req_body.email.trim();
