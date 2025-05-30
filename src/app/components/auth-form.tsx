@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import {
+  Mail,
   MessageCircle,
   User,
-  Mail,
   Phone,
   Lock,
   ArrowRight,
@@ -80,19 +80,19 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     return password === confirmPassword;
   };
 
-  const isFormValid =
-    isValidUsername(formData.username) &&
-    isValidEmail(formData.email) &&
-    isValidPhoneNumber(formData.phone_number) &&
-    isValidPassword(formData.password) &&
-    doPasswordsMatch(formData.password, formData.confirmPassword);
+  let isFormValid = true;
+  if (mode === "register") {
+    isFormValid =
+      isValidUsername(formData.username) &&
+      isValidEmail(formData.email) &&
+      isValidPhoneNumber(formData.phone_number) &&
+      isValidPassword(formData.password) &&
+      doPasswordsMatch(formData.password, formData.confirmPassword);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    // Temp login for Message Template
-    localStorage.setItem("user-email", formData.email);
 
     if (mode === "register") {
       try {
@@ -103,8 +103,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           password: formData.password,
         });
 
+        // at this point, registration was successful
         showNotification("success", response.data?.detail, "Account created!");
-
         router.push("/dashboard");
       } catch (error: any) {
         const message = error.response?.data?.detail || "Registration failed.";
@@ -112,24 +112,22 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
       } finally {
         setLoading(false);
       }
+    } else {
+      try {
+        const response = await api.post("/auth/login", {
+          username: formData.username,
+          password: formData.password,
+        });
 
-      return;
-    }
-
-    try {
-      const response = await api.post("/auth/login", {
-        username_or_email: formData.email,
-        password: formData.password,
-      });
-
-      showNotification("success", response.data?.detail, "Welcome back!");
-
-      router.push("/dashboard");
-    } catch (error: any) {
-      const message = error.response?.data?.detail || "Login failed.";
-      showNotification("error", message, "Error");
-    } finally {
-      setLoading(false);
+        // at this point, login was successful
+        showNotification("success", response.data?.detail, "Welcome back!");
+        router.push("/dashboard");
+      } catch (error: any) {
+        const message = error.response?.data?.detail || "Login failed.";
+        showNotification("error", message, "Error");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -144,14 +142,14 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             >
               <MessageCircle className="w-8 h-8" />
             </div>
-            <h1 className="text-3xl font bold">TKL-CHAT</h1>
+            <h1 className="text-3xl font bold">TKL Chat</h1>
             <h2 className="mt-2 text-xl font-medium text-[var(--foreground)]">
               {mode === "login" ? "Welcome back" : "Create your account"}
             </h2>
             <p className="mt-2 text-[var(--foreground)]">
               {mode === "login"
                 ? "Sign in to continue to your account"
-                : "Join TKL-CHAT and start connecting with others"}
+                : "Join TKL Chat and start connecting with others"}
             </p>
           </div>
 
@@ -160,10 +158,10 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
               <div className="space-y-5">
                 <div className="relative">
                   <label
-                    htmlFor="email"
+                    htmlFor="username"
                     className="block text-sm font-medium mb-2"
                   >
-                    Email or Username
+                    Username
                   </label>
 
                   <div className="relative">
@@ -171,20 +169,20 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       className="absolute inset-y-0 left-0 pl-3 flex items-center
                                         pointer-events-none"
                     >
-                      <Mail className="h-5 w-5 text-[var(--muted-foreground)]" />
+                      <User className="h-5 w-5 text-[var(--muted-foreground)]" />
                     </div>
                     <input
-                      id="email"
-                      name="email"
+                      id="username"
+                      name="username"
                       type="text"
-                      autoComplete="email"
-                      value={formData.email}
+                      autoComplete="username"
+                      value={formData.username}
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
                       rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
                       focus:ring-offset-2 focus:border-transparent transition-all duration-300
                       text-[var(--foreground)] font-medium"
-                      placeholder="Enter your email or username"
+                      placeholder="Enter your username"
                       required
                     />
                   </div>
@@ -192,7 +190,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
 
                 <div className="relative">
                   <label
-                    htmlFor="email"
+                    htmlFor="password"
                     className="block text-sm font-medium mb-2"
                   >
                     Password
@@ -609,11 +607,11 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={loading || (mode === "register" && !isFormValid)}
+                disabled={loading || !isFormValid}
                 className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors 
                   focus:outline-none focus:ring-1 focus:ring-offset-2
                   ${
-                    mode === "register" && !isFormValid
+                    !isFormValid
                       ? "bg-gray-400 text-gray-700 cursor-not-allowed"
                       : `bg-[var(--foreground)] cursor-pointer
                        text-[var(--background)] hover:opacity-90 focus:ring-[var(--foreground)]`
@@ -665,14 +663,14 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           </div>
           <h2 className="text-2xl font-bold mb-4">
             {mode === "login"
-              ? "Welcome back to TKL-CHAT"
-              : "Join TKL-CHAT today"}
+              ? "Welcome back to TKL Chat"
+              : "Join TKL Chat today"}
           </h2>
           <p className="text-[var(--muted-foreground)] mb-8">
             {mode === "login"
               ? `Connect with your friends, family, and colleagues securely with end to end 
                 encryption`
-              : `Create an account to enjoy secure messaging, group chats, and more with TKL-CHAT`}
+              : `Create an account to enjoy secure messaging, group chats, and more with TKL Chat`}
           </p>
 
           <div className="space-y-4">

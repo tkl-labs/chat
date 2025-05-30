@@ -64,12 +64,7 @@ export default function ChatSidebar() {
     try {
       const response = await api.post("/auth/logout", {});
 
-      showNotification(
-        "success",
-        response.data?.detail,
-        "logged out successfully"
-      );
-
+      showNotification("success", response.data?.detail, "Goodbye!");
       router.push("/");
     } catch (error) {
       console.error("Error logging out:", error);
@@ -86,7 +81,7 @@ export default function ChatSidebar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-6 h-6 text-[var(--foreground)]" />
-            <h1 className="text-xl font-bold">TKL-CHAT</h1>
+            <h1 className="text-xl font-bold">TKL Chat</h1>
           </div>
           <Link
             href="/chat/new"
@@ -186,9 +181,13 @@ export default function ChatSidebar() {
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
+              <span className="text-white text-sm font-medium">
+                <span className="text-white text-sm font-medium">
+                  {"undefined".charAt(0)}
+                </span>
+              </span>
             </div>
-            <div className="truncate">User</div>
+            <div className="truncate">{"undefined"}</div>
           </Link>
 
           <div className="flex">

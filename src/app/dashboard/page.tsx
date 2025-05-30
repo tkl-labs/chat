@@ -5,7 +5,7 @@ export default function Dashboard() {
   return (
     <div className="h-full flex flex-col items-center justify-center p-4">
       <div className="max-w-md text-center">
-        <h1 className="text-2xl font-bold mb-2"> Welcome to TKL-CHAT</h1>
+        <h1 className="text-2xl font-bold mb-2"> Welcome to TKL Chat</h1>
         <p className="text-[var(--muted-foreground)] mb-6">
           Select a chat from the sidebar or start a new conversation
         </p>

@@ -7,9 +7,9 @@ export default function ChatSidebarSkeleton() {
     <div className="w-screen sm:w-64 h-screen flex flex-col border-r border-[var(--border-color)]">
       <div className="p-4 border-b border-[var(--border-color)]">
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-          <MessageCircle className="w-6 h-6 text-[var(--foreground)] opacity-70" />
-          <h1 className="text-xl font-bold opacity-70">TKL-CHAT</h1>
+          <div className="flex items-center gap-2">
+            <MessageCircle className="w-6 h-6 text-[var(--foreground)] opacity-70" />
+            <h1 className="text-xl font-bold opacity-70">TKL Chat</h1>
           </div>
           <div className="sm:hidden w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse mx-1"></div>
         </div>
