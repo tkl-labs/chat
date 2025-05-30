@@ -10,13 +10,18 @@ import {
   MessageCirclePlus,
 } from "lucide-react";
 import { Group } from "@/lib/db-types";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ChatSidebarSkeleton from "./skeletons";
 import { getMockData } from "@/lib/mock-data";
+import api from "@/lib/axios";
+import { useNotification } from "./notification-provider";
 
 export default function ChatSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { showNotification } = useNotification();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,10 +62,15 @@ export default function ChatSidebar() {
 
   const handleLogOut = async () => {
     try {
-      // Simulating API
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await api.post("/auth/logout", {});
 
-      window.location.href = "/";
+      showNotification(
+        "success",
+        response.data?.detail,
+        "logged out successfully"
+      );
+
+      router.push("/");
     } catch (error) {
       console.error("Error logging out:", error);
     }
