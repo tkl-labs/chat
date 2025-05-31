@@ -15,6 +15,7 @@ import { useNotification } from "./notification-provider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/axios";
+import { AxiosError } from "axios";
 
 type FormMode = "login" | "register";
 
@@ -44,7 +45,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value: inputValue } = e.target;
+    const { name } = e.target;
 
     let value = e.target.value;
 
@@ -106,7 +107,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
         // at this point, registration was successful
         showNotification("success", response.data?.detail, "Account created!");
         router.push("/dashboard");
-      } catch (error: any) {
+      } catch (err) {
+        const error = err as AxiosError<{ detail?: string }>;
         const message = error.response?.data?.detail || "Registration failed.";
         showNotification("error", message, "Error");
       } finally {
@@ -122,7 +124,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
         // at this point, login was successful
         showNotification("success", response.data?.detail, "Welcome back!");
         router.push("/dashboard");
-      } catch (error: any) {
+      } catch (err) {
+        const error = err as AxiosError<{ detail?: string }>;
         const message = error.response?.data?.detail || "Login failed.";
         showNotification("error", message, "Error");
       } finally {
