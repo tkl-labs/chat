@@ -130,7 +130,7 @@ export default function Home() {
         <main className="flex flex-col gap-[32px] items-center sm:items-start max-w-md mx-auto">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-8 h-8" />
-            <h1 className="text-3xl font-bold">TKL-CHAT</h1>
+            <h1 className="text-3xl font-bold">TKL Chat</h1>
           </div>
 
           <p className="text-xl text-center sm:text-left">
@@ -211,7 +211,7 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <Avatar userType="app" />
                 <div>
-                  <h3 className="font-semibold">TKL-CHAT</h3>
+                  <h3 className="font-semibold">TKL Chat</h3>
                   <p className="text-xs text-[var(--muted-foreground)]">
                     Online
                   </p>
@@ -234,7 +234,7 @@ export default function Home() {
                 <Avatar className="mt-1" userType="user1" />
                 <div className="bg-[var(--muted-bg)] p-3 rounded-lg rounded-tl-none max-w-[80%]">
                   <p className="text-sm">
-                    Hey there! Welcome to TKL-CHAT. How can I help you today?
+                    Hey there! Welcome to TKL Chat. How can I help you today?
                   </p>
                   <span className="text-xs text-[var(--muted-foreground)]">
                     10:24 AM
@@ -249,7 +249,7 @@ export default function Home() {
                 >
                   <p className="text-sm">
                     Hi! I am interested in learning more about the features of
-                    TKL-CHAT.
+                    TKL Chat.
                   </p>
                   <span className="text-xs opacity-70">10:26 AM</span>
                 </div>
@@ -260,7 +260,7 @@ export default function Home() {
                 <Avatar className="mt-1" userType="user1" />
                 <div className="bg-[var(--muted-bg)] p-3 rounded-lg rounded-tl-none max-w-[80%]">
                   <p className="text-sm">
-                    Of course! TKL-CHAT offers end-to-end encryption, group
+                    Of course! TKL Chat offers end-to-end encryption, group
                     chats, and syncs across all your devices.
                   </p>
                   <span className="text-xs text-[var(--muted-foreground)]">

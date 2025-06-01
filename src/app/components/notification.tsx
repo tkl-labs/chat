@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { type NotificationType } from "@/lib/notification-store";
 import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from "lucide-react";
 
@@ -53,6 +53,13 @@ export default function Notification({
   const Icon = iconMap[type];
   const style = styleMap[type];
 
+  const handleDismiss = useCallback(() => {
+    setIsVisible(false);
+    if (onDismiss) {
+      onDismiss();
+    }
+  }, [onDismiss]);
+
   useEffect(() => {
     if (autoDismiss && isVisible) {
       const timer = setTimeout(() => {
@@ -60,14 +67,7 @@ export default function Notification({
       }, autoDissmissTimeout);
       return () => clearTimeout(timer);
     }
-  }, [autoDismiss, autoDissmissTimeout, isVisible]);
-
-  const handleDismiss = () => {
-    setIsVisible(false);
-    if (onDismiss) {
-      onDismiss();
-    }
-  };
+  }, [autoDismiss, autoDissmissTimeout, isVisible, handleDismiss]);
 
   if (!isVisible) return null;
 

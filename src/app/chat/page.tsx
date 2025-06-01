@@ -98,8 +98,7 @@ export default function ChatPage({
 
         const groupMessages = allMessages
           .filter(
-            (msg) =>
-              msg.group_id === resolvedParams.groupId && !msg.is_deleted
+            (msg) => msg.group_id === resolvedParams.groupId && !msg.is_deleted
           )
           .map((msg) => {
             const sender = users.find((user) => user.id === msg.user_id);
@@ -115,7 +114,10 @@ export default function ChatPage({
                 : sender?.username || "Unknown User",
             };
           })
-          .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+          .sort(
+            (a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          )
           .map((msg) => ({
             ...msg,
             timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
@@ -195,12 +197,18 @@ export default function ChatPage({
       <div className="p-4 border-b border-[var(--border-color)] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-full ${groupInfo.isGroup ? "bg-[var(--foreground)]" : "bg-[var(--user1-color)]"} flex items-center justify-center`}
+            className={`w-10 h-10 rounded-full ${
+              groupInfo.isGroup
+                ? "bg-[var(--foreground)]"
+                : "bg-[var(--user1-color)]"
+            } flex items-center justify-center`}
           >
             {groupInfo.isGroup ? (
               <User className="w-5 h-5 text-[var(--background)]" />
             ) : (
-              <span className="text-white text-sm font-medium">{groupInfo.name.charAt(0)}</span>
+              <span className="text-white text-sm font-medium">
+                {groupInfo.name.charAt(0)}
+              </span>
             )}
           </div>
           <div>
@@ -229,7 +237,9 @@ export default function ChatPage({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-[var(--muted-foreground)]">No messages yet. Start the conversation!</p>
+            <p className="text-[var(--muted-foreground)]">
+              No messages yet. Start the conversation!
+            </p>
           </div>
         ) : (
           messages.map((message) => (
@@ -237,8 +247,13 @@ export default function ChatPage({
               key={message.id}
               content={message.content}
               timestamp={message.timestamp}
-              isCurrentUser={message.senderId === messages.find(m => m.senderName === "You")?.senderId}
-              senderName={message.senderName !== "You" ? message.senderName : undefined}
+              isCurrentUser={
+                message.senderId ===
+                messages.find((m) => m.senderName === "You")?.senderId
+              }
+              senderName={
+                message.senderName !== "You" ? message.senderName : undefined
+              }
             />
           ))
         )}
@@ -264,5 +279,5 @@ export default function ChatPage({
         </form>
       </div>
     </div>
-  )
+  );
 }

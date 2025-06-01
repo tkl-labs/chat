@@ -10,13 +10,18 @@ import {
   MessageCirclePlus,
 } from "lucide-react";
 import { Group } from "@/lib/db-types";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ChatSidebarSkeleton from "./skeletons";
 import { getMockData } from "@/lib/mock-data";
+import api from "@/lib/axios";
+import { useNotification } from "./notification-provider";
 
 export default function ChatSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { showNotification } = useNotification();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,10 +62,10 @@ export default function ChatSidebar() {
 
   const handleLogOut = async () => {
     try {
-      // Simulating API
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await api.post("/auth/logout", {});
 
-      window.location.href = "/";
+      showNotification("success", response.data?.detail, "Goodbye!");
+      router.push("/");
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -76,7 +81,7 @@ export default function ChatSidebar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-6 h-6 text-[var(--foreground)]" />
-            <h1 className="text-xl font-bold">TKL-CHAT</h1>
+            <h1 className="text-xl font-bold">TKL Chat</h1>
           </div>
           <Link
             href="/chat/new"
@@ -176,9 +181,13 @@ export default function ChatSidebar() {
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
+              <span className="text-white text-sm font-medium">
+                <span className="text-white text-sm font-medium">
+                  {"undefined".charAt(0)}
+                </span>
+              </span>
             </div>
-            <div className="truncate">User</div>
+            <div className="truncate">{"undefined"}</div>
           </Link>
 
           <div className="flex">

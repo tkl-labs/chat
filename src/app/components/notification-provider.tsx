@@ -50,6 +50,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  const dismissNotification = useCallback((id: string) => {
+    notificationStore.removeNotification(id);
+    setNotifications(notificationStore.getNotifications());
+  }, []);
+
+  const dismissAllNotifications = useCallback(() => {
+    notificationStore.clearNotifications();
+    setNotifications([]);
+  }, []);
+
   const showNotification = useCallback(
     (
       type: NotificationType,
@@ -69,18 +79,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
       return id;
     },
-    []
+    [dismissNotification]
   );
-
-  const dismissNotification = useCallback((id: string) => {
-    notificationStore.removeNotification(id);
-    setNotifications(notificationStore.getNotifications());
-  }, []);
-
-  const dismissAllNotifications = useCallback(() => {
-    notificationStore.clearNotifications();
-    setNotifications([]);
-  }, []);
 
   return (
     <NotificationContext.Provider
