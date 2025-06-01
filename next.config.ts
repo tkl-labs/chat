@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
 
-const internalHost = process.env.TAURI_DEV_HOST || "localhost";
+const internalHost = process.env.TAURI_DEV_HOST || "127.0.0.1";
 
 const nextConfig: NextConfig = {
   // Ensure Next.js uses SSG instead of SSR
@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
+  allowedDevOrigins: ["127.0.0.1", "local-origin.dev", "*.local-origin.dev"],
   // Configure assetPrefix or else the server won't properly resolve your assets.
   assetPrefix: isProd ? undefined : `http://${internalHost}:3000`,
 };
