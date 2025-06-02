@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "npx serve@latest out",
     "lint": "next lint",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
@@ -27,6 +28,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.3.3",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

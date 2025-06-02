@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   createContext,
@@ -7,13 +7,13 @@ import {
   useEffect,
   useCallback,
   type ReactNode,
-} from "react";
-import Notification from "./notification";
-import { type NotificationType } from "@/lib/notification-store";
+} from 'react'
+import Notification from './notification'
+import { type NotificationType } from '@/lib/notification-store'
 import {
   notificationStore,
   type StoreNotifcation,
-} from "@/lib/notification-store";
+} from '@/lib/notification-store'
 
 type NotificationContextType = {
   showNotification: (
@@ -21,44 +21,44 @@ type NotificationContextType = {
     message: string,
     title?: string,
     autoDismiss?: boolean,
-    autoDissmissTimeout?: number
-  ) => string;
-  dismissNotification: (id: string) => void;
-  dismissAllNotifications: () => void;
-};
+    autoDissmissTimeout?: number,
+  ) => string
+  dismissNotification: (id: string) => void
+  dismissAllNotifications: () => void
+}
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
-  undefined
-);
+  undefined,
+)
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<StoreNotifcation[]>([]);
+  const [notifications, setNotifications] = useState<StoreNotifcation[]>([])
 
   useEffect(() => {
     // Clears old notifications
-    notificationStore.clearOldNotifications(30000);
+    notificationStore.clearOldNotifications(30000)
 
     // Loads the remanining notifications
-    setNotifications(notificationStore.getNotifications());
+    setNotifications(notificationStore.getNotifications())
 
     // Set up an interval to periodically check for new notifications
     // Change this when websockets get implemented
     const interval = setInterval(() => {
-      setNotifications(notificationStore.getNotifications());
-    }, 1000);
+      setNotifications(notificationStore.getNotifications())
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
   const dismissNotification = useCallback((id: string) => {
-    notificationStore.removeNotification(id);
-    setNotifications(notificationStore.getNotifications());
-  }, []);
+    notificationStore.removeNotification(id)
+    setNotifications(notificationStore.getNotifications())
+  }, [])
 
   const dismissAllNotifications = useCallback(() => {
-    notificationStore.clearNotifications();
-    setNotifications([]);
-  }, []);
+    notificationStore.clearNotifications()
+    setNotifications([])
+  }, [])
 
   const showNotification = useCallback(
     (
@@ -66,21 +66,21 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       message: string,
       title?: string,
       autoDismiss = true,
-      autoDissmissTimeout = 5000
+      autoDissmissTimeout = 5000,
     ): string => {
-      const id = notificationStore.addNotification(type, message, title);
-      setNotifications(notificationStore.getNotifications());
+      const id = notificationStore.addNotification(type, message, title)
+      setNotifications(notificationStore.getNotifications())
 
       if (autoDismiss) {
         setTimeout(() => {
-          dismissNotification(id);
-        }, autoDissmissTimeout);
+          dismissNotification(id)
+        }, autoDissmissTimeout)
       }
 
-      return id;
+      return id
     },
-    [dismissNotification]
-  );
+    [dismissNotification],
+  )
 
   return (
     <NotificationContext.Provider
@@ -105,17 +105,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         ))}
       </div>
     </NotificationContext.Provider>
-  );
+  )
 }
 
 export function useNotification() {
-  const context = useContext(NotificationContext);
+  const context = useContext(NotificationContext)
 
   if (context === undefined) {
     throw new Error(
-      "useNotification must be used within a NotificationProvider"
-    );
+      'useNotification must be used within a NotificationProvider',
+    )
   }
 
-  return context;
+  return context
 }

@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   MessageCircle,
   Search,
@@ -8,71 +8,71 @@ import {
   Settings,
   LogOut,
   MessageCirclePlus,
-} from "lucide-react";
-import { Group } from "@/lib/db-types";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import ChatSidebarSkeleton from "./skeletons";
-import { getMockData } from "@/lib/mock-data";
-import api from "@/lib/axios";
-import { useNotification } from "./notification-provider";
+} from 'lucide-react'
+import { Group } from '@/lib/db-types'
+import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import ChatSidebarSkeleton from './skeletons'
+import { getMockData } from '@/lib/mock-data'
+import api from '@/lib/axios'
+import { useNotification } from './notification-provider'
 
 export default function ChatSidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { showNotification } = useNotification();
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const pathname = usePathname()
+  const router = useRouter()
+  const { showNotification } = useNotification()
+  const [groups, setGroups] = useState<Group[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         // Use the same mock data as the chat page
-        const mockData = await getMockData();
+        const mockData = await getMockData()
 
         // Transform DM group names to show only the other person's name
         const transformedGroups = mockData.groups.map((group) => {
           if (group.is_dm) {
             // Extract just the other person's name from "Koushic Sumathi Kumar & Other Name"
-            const nameParts = group.name.split(" & ");
-            const otherPersonName = nameParts[1] || nameParts[0];
+            const nameParts = group.name.split(' & ')
+            const otherPersonName = nameParts[1] || nameParts[0]
             return {
               ...group,
               name: otherPersonName,
-            };
+            }
           }
-          return group;
-        });
+          return group
+        })
 
-        setGroups(transformedGroups);
+        setGroups(transformedGroups)
       } catch (error) {
-        console.log("Error fetching groups:", error);
+        console.log('Error fetching groups:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchGroups();
-  }, []);
+    }
+    fetchGroups()
+  }, [])
 
   const filteredGroups = groups.filter((group) =>
-    group.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-  );
+    group.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()),
+  )
 
   const handleLogOut = async () => {
     try {
-      const response = await api.post("/auth/logout", {});
+      const response = await api.post('/auth/logout', {})
 
-      showNotification("success", response.data?.detail, "Goodbye!");
-      router.push("/");
+      showNotification('success', response.data?.detail, 'Goodbye!')
+      router.push('/')
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error('Error logging out:', error)
     }
-  };
+  }
 
   if (loading) {
-    return <ChatSidebarSkeleton />;
+    return <ChatSidebarSkeleton />
   }
 
   return (
@@ -126,8 +126,8 @@ export default function ChatSidebar() {
                   className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
                         dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
                           pathname === `/chat/${group.id}`
-                            ? "bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]"
-                            : ""
+                            ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
+                            : ''
                         }`}
                 >
                   <div
@@ -151,8 +151,8 @@ export default function ChatSidebar() {
                   className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
                         dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
                           pathname === `/chat/${group.id}`
-                            ? "bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]"
-                            : ""
+                            ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
+                            : ''
                         }`}
                 >
                   <div
@@ -183,11 +183,11 @@ export default function ChatSidebar() {
             <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
               <span className="text-white text-sm font-medium">
                 <span className="text-white text-sm font-medium">
-                  {"undefined".charAt(0)}
+                  {'undefined'.charAt(0)}
                 </span>
               </span>
             </div>
-            <div className="truncate">{"undefined"}</div>
+            <div className="truncate">{'undefined'}</div>
           </Link>
 
           <div className="flex">
@@ -210,5 +210,5 @@ export default function ChatSidebar() {
         </div>
       </div>
     </div>
-  );
+  )
 }

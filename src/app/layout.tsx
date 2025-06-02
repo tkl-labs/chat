@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { NotificationProvider } from "./components/notification-provider";
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import './globals.css'
+import { NotificationProvider } from './components/notification-provider'
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
-  title: "TKL Chat",
-  description: "A cross-platform chat room.",
-};
+  title: 'TKL Chat',
+  description: 'A cross-platform chat room.',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -31,5 +31,5 @@ export default function RootLayout({
         <NotificationProvider>{children}</NotificationProvider>
       </body>
     </html>
-  );
+  )
 }
