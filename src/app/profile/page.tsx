@@ -5,11 +5,16 @@ import type React from 'react'
 import { useState } from 'react'
 import { UserIcon, Camera } from 'lucide-react'
 import { User } from '@/lib/db-types'
-import mockUser from '@/lib/mock-data'
+import { useUser } from '@/app/components/user-provider'
 import Image from 'next/image'
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<User>(mockUser)
+  const { user } = useUser()
+
+  if (!user) {
+    throw new Error('User must be defined at this point')
+  }
+  const [profile, setProfile] = useState<User>(user)
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState(profile)
 

@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   MessageCirclePlus,
+  UserIcon,
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
 import { useRouter } from 'next/navigation'
@@ -15,9 +16,9 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ChatSidebarSkeleton from './skeletons'
 import { getMockData } from '@/lib/mock-data'
-import api from '@/lib/axios'
 import { useNotification } from './notification-provider'
 import { useUser } from './user-provider'
+import Image from 'next/image'
 
 export default function ChatSidebar() {
   const pathname = usePathname()
@@ -180,14 +181,22 @@ export default function ChatSidebar() {
             className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
-              <span className="text-white text-sm font-medium">
-                <span className="text-white text-sm font-medium">
-                  {'undefined'.charAt(0)}
-                </span>
-              </span>
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
+                {user?.profile_pic ? (
+                  <Image
+                    src={user.profile_pic}
+                    alt={user.username}
+                    className="w-full h-full rounded-full"
+                    width={760}
+                    height={760}
+                  />
+                ) : (
+                  <UserIcon className="w-4 h-4 text-white" />
+                )}
+              </div>
             </div>
-            <div className="truncate">{'undefined'}</div>
+            <div className="truncate">{user?.username}</div>
           </Link>
 
           <div className="flex">
