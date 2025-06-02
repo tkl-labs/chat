@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import {
   MessageCircle,
   Search,
@@ -17,6 +17,7 @@ import ChatSidebarSkeleton from './skeletons'
 import { getMockData } from '@/lib/mock-data'
 import api from '@/lib/axios'
 import { useNotification } from './notification-provider'
+import { useUser } from './user-provider'
 
 export default function ChatSidebar() {
   const pathname = usePathname()
@@ -25,6 +26,7 @@ export default function ChatSidebar() {
   const [groups, setGroups] = useState<Group[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const {user, logout} = useUser();
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -62,10 +64,8 @@ export default function ChatSidebar() {
 
   const handleLogOut = async () => {
     try {
-      const response = await api.post('/auth/logout', {})
-
-      showNotification('success', response.data?.detail, 'Goodbye!')
-      router.push('/')
+      const response = logout()
+      showNotification('success', 'Logged out successfully', 'Goodbye!')
     } catch (error) {
       console.error('Error logging out:', error)
     }

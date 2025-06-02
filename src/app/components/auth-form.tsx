@@ -16,12 +16,14 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { useUser } from '@/app/components/user-provider'
 
 type FormMode = 'login' | 'register'
 
 export default function AuthForm({ mode }: { mode: FormMode }) {
   const router = useRouter()
   const { showNotification } = useNotification()
+  const { login } = useUser()
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -120,6 +122,11 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           username: formData.username,
           password: formData.password,
         })
+
+        if (response.data) {
+          login(response.data)
+          console.log('User registered and logged in:', response.data)
+        }
 
         // at this point, login was successful
         showNotification('success', response.data?.detail, 'Welcome back!')
