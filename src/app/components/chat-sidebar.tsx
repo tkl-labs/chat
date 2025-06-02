@@ -178,7 +178,7 @@ export default function ChatSidebar() {
         <div className="flex items-center justify-between">
           <Link
             href="/profile"
-            className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
+            className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="relative">
@@ -196,24 +196,24 @@ export default function ChatSidebar() {
                 )}
               </div>
             </div>
-            <div className="truncate">{user?.username}</div>
+            <div className="truncate flex-1">{user?.username}</div>
           </Link>
 
           <div className="flex">
             <Link
               href="/settings"
-              className="p-2 rounded-md hover:bg-[var(--hover-light)]
+              className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-6 h-6" />
             </Link>
 
             <button
               onClick={handleLogOut}
-              className="p-2 rounded-md hover:bg-[var(--hover-light)]
+              className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors cursor-pointer"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-6 h-6" />
             </button>
           </div>
         </div>

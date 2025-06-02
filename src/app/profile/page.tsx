@@ -71,7 +71,7 @@ export default function ProfilePage() {
             <button
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-md 
-              hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)] transition-colors"
+              hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)] transition-colors cursor-pointer"
             >
               Edit Profile
             </button>
@@ -159,7 +159,7 @@ export default function ProfilePage() {
                   }}
                   className="px-4 py-2 border border-[var(--border-color)] rounded-md
                             hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] 
-                            hover:border-transparent"
+                            hover:border-transparent cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -168,7 +168,7 @@ export default function ProfilePage() {
                   type="submit"
                   className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-md
                             hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)]
-                            transition-colors"
+                            transition-colors cursor-pointer"
                 >
                   Save Changes
                 </button>
