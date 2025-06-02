@@ -1,44 +1,44 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback } from "react";
-import { type NotificationType } from "@/lib/notification-store";
-import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from "lucide-react";
+import { useState, useEffect, useCallback } from 'react'
+import { type NotificationType } from '@/lib/notification-store'
+import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react'
 
 export type NotificationProps = {
-  type: NotificationType;
-  title?: string;
-  message: string;
-  onDismiss?: () => void;
-  autoDismiss?: boolean;
-  autoDissmissTimeout?: number;
-  showIcon?: boolean;
-};
+  type: NotificationType
+  title?: string
+  message: string
+  onDismiss?: () => void
+  autoDismiss?: boolean
+  autoDissmissTimeout?: number
+  showIcon?: boolean
+}
 
 const iconMap = {
   success: CheckCircle,
   error: AlertCircle,
   info: Info,
   warning: AlertTriangle,
-};
+}
 
 const styleMap = {
   success: {
-    container: "bg-[#ECFDF5] border-[#A7F3D0] text-[#065F46]",
-    icon: "text-[#059669]",
+    container: 'bg-[#ECFDF5] border-[#A7F3D0] text-[#065F46]',
+    icon: 'text-[#059669]',
   },
   error: {
-    container: "bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]",
-    icon: "text-[#DC2626]",
+    container: 'bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]',
+    icon: 'text-[#DC2626]',
   },
   info: {
-    container: "bg-[#EFF6FF] border-[#BFDBFE] text-[#1E40AF]",
-    icon: "text-[#3B82F6]",
+    container: 'bg-[#EFF6FF] border-[#BFDBFE] text-[#1E40AF]',
+    icon: 'text-[#3B82F6]',
   },
   warning: {
-    container: "bg-[#FFFBEB] border-[#FEF3C7] text-[#92400E]",
-    icon: "text-[#F59E0B]",
+    container: 'bg-[#FFFBEB] border-[#FEF3C7] text-[#92400E]',
+    icon: 'text-[#F59E0B]',
   },
-};
+}
 
 export default function Notification({
   type,
@@ -49,27 +49,27 @@ export default function Notification({
   autoDissmissTimeout = 5000,
   showIcon = true,
 }: NotificationProps) {
-  const [isVisible, setIsVisible] = useState(true);
-  const Icon = iconMap[type];
-  const style = styleMap[type];
+  const [isVisible, setIsVisible] = useState(true)
+  const Icon = iconMap[type]
+  const style = styleMap[type]
 
   const handleDismiss = useCallback(() => {
-    setIsVisible(false);
+    setIsVisible(false)
     if (onDismiss) {
-      onDismiss();
+      onDismiss()
     }
-  }, [onDismiss]);
+  }, [onDismiss])
 
   useEffect(() => {
     if (autoDismiss && isVisible) {
       const timer = setTimeout(() => {
-        handleDismiss();
-      }, autoDissmissTimeout);
-      return () => clearTimeout(timer);
+        handleDismiss()
+      }, autoDissmissTimeout)
+      return () => clearTimeout(timer)
     }
-  }, [autoDismiss, autoDissmissTimeout, isVisible, handleDismiss]);
+  }, [autoDismiss, autoDissmissTimeout, isVisible, handleDismiss])
 
-  if (!isVisible) return null;
+  if (!isVisible) return null
 
   return (
     <div
@@ -82,7 +82,7 @@ export default function Notification({
 
       <div className="flex-1">
         {title && <div className="font-medium">{title}</div>}
-        <div className={title ? "text-sm mt-1" : ""}> {message}</div>
+        <div className={title ? 'text-sm mt-1' : ''}> {message}</div>
       </div>
 
       <button
@@ -93,5 +93,5 @@ export default function Notification({
         <X className="w-4 h-4" />
       </button>
     </div>
-  );
+  )
 }

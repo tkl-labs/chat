@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import type React from "react";
+import type React from 'react'
 
-import { useState } from "react";
-import { UserIcon, Camera } from "lucide-react";
-import { User } from "@/lib/db-types";
-import mockUser from "@/lib/mock-data";
-import Image from "next/image";
+import { useState } from 'react'
+import { UserIcon, Camera } from 'lucide-react'
+import { User } from '@/lib/db-types'
+import mockUser from '@/lib/mock-data'
+import Image from 'next/image'
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<User>(mockUser);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(profile);
+  const [profile, setProfile] = useState<User>(mockUser)
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState(profile)
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setProfile(formData);
-    setIsEditing(false);
-  };
+    e.preventDefault()
+    setProfile(formData)
+    setIsEditing(false)
+  }
 
   return (
     <div className="h-full flex flex-col items-center justify-center p-4">
@@ -59,7 +59,7 @@ export default function ProfilePage() {
             <p className="text-[var(--muted-foreground)] mb-4">
               {profile.email}
             </p>
-            <p className="text-sm">{profile.bio || "No bio provided"}</p>
+            <p className="text-sm">{profile.bio || 'No bio provided'}</p>
           </div>
 
           {!isEditing && (
@@ -137,7 +137,7 @@ export default function ProfilePage() {
                 <textarea
                   id="bio"
                   name="bio"
-                  value={formData.bio || ""}
+                  value={formData.bio || ''}
                   onChange={handleChange}
                   rows={3}
                   className="w-full px-3 py-2 border border-[var(--border-color)] rounded-md
@@ -149,8 +149,8 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => {
-                    setIsEditing(false);
-                    setFormData(profile);
+                    setIsEditing(false)
+                    setFormData(profile)
                   }}
                   className="px-4 py-2 border border-[var(--border-color)] rounded-md
                             hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] 
@@ -189,5 +189,5 @@ export default function ProfilePage() {
         )}
       </div>
     </div>
-  );
+  )
 }

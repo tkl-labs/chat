@@ -1,13 +1,13 @@
-import { User } from "lucide-react";
-import Image from "next/image";
+import { User } from 'lucide-react'
+import Image from 'next/image'
 
 type MessageProps = {
-  content: string;
-  timestamp: string;
-  isCurrentUser: boolean;
-  senderName?: string;
-  senderAvatar?: string;
-};
+  content: string
+  timestamp: string
+  isCurrentUser: boolean
+  senderName?: string
+  senderAvatar?: string
+}
 
 export default function ChatMessage({
   content,
@@ -18,14 +18,14 @@ export default function ChatMessage({
 }: MessageProps) {
   return (
     <div
-      className={`flex items-start gap-2 ${isCurrentUser ? "justify-end" : ""}`}
+      className={`flex items-start gap-2 ${isCurrentUser ? 'justify-end' : ''}`}
     >
       {!isCurrentUser && (
         <div className="w-8 h-8 rounded-full bg-[var(--user1-color)] flex items-center justify-center flex-shrink-0 mt-1">
           {senderAvatar ? (
             <Image
-              src={senderAvatar || "/placeholder.svg"}
-              alt={senderName || "unknown user"}
+              src={senderAvatar || '/placeholder.svg'}
+              alt={senderName || 'unknown user'}
               layout="fill"
               objectFit="cover"
               className="rounded-full"
@@ -39,8 +39,8 @@ export default function ChatMessage({
       <div
         className={`p-3 rounded-lg max-w-[80%] ${
           isCurrentUser
-            ? "bg-[var(--foreground)] text-[var(--background)] rounded-tr-none"
-            : "bg-[var(--muted-bg)] rounded-tl-none"
+            ? 'bg-[var(--foreground)] text-[var(--background)] rounded-tr-none'
+            : 'bg-[var(--muted-bg)] rounded-tl-none'
         }`}
       >
         {!isCurrentUser && senderName && (
@@ -50,8 +50,8 @@ export default function ChatMessage({
         <span
           className={`text-xs ${
             isCurrentUser
-              ? "text-[var(--background)]/70"
-              : "text-[var(--muted-foreground)]"
+              ? 'text-[var(--background)]/70'
+              : 'text-[var(--muted-foreground)]'
           }`}
         >
           {timestamp}
@@ -62,7 +62,7 @@ export default function ChatMessage({
         <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center flex-shrink-0 mt-1">
           {senderAvatar ? (
             <Image
-              src={senderAvatar || "/placeholder.svg"}
+              src={senderAvatar || '/placeholder.svg'}
               alt="You"
               width={100}
               height={100}
@@ -74,5 +74,5 @@ export default function ChatMessage({
         </div>
       )}
     </div>
-  );
+  )
 }

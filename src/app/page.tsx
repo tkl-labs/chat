@@ -1,85 +1,85 @@
-"use client";
+'use client'
 import {
   useState,
   type ReactNode,
   type ChangeEvent,
   type ButtonHTMLAttributes,
-} from "react";
-import { MessageCircle, Send, User, Menu, Search } from "lucide-react";
-import Link from "next/link";
+} from 'react'
+import { MessageCircle, Send, User, Menu, Search } from 'lucide-react'
+import Link from 'next/link'
 
 type AvatarProps = {
-  children?: ReactNode;
-  className?: string;
-  userType?: "user1" | "user2" | "app";
-};
+  children?: ReactNode
+  className?: string
+  userType?: 'user1' | 'user2' | 'app'
+}
 
-type ButtonVariant = "default" | "ghost";
-type ButtonSize = "default" | "icon";
+type ButtonVariant = 'default' | 'ghost'
+type ButtonSize = 'default' | 'icon'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  className?: string;
-};
+  children: ReactNode
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+}
 
 type InputProps = {
-  className?: string;
-  value?: string;
-  placeholder?: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-};
+  className?: string
+  value?: string
+  placeholder?: string
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+}
 
 type CardProps = {
-  children: ReactNode;
-  className?: string;
-};
+  children: ReactNode
+  className?: string
+}
 
 const Avatar = ({
   children,
-  className = "",
-  userType = "user1",
+  className = '',
+  userType = 'user1',
 }: AvatarProps) => {
   const bgColor =
-    userType === "user1"
-      ? "bg-[var(--user1-color)]"
-      : userType === "user2"
-      ? "bg-[var(--user2-color)]"
-      : "bg-[var(--foreground)]";
+    userType === 'user1'
+      ? 'bg-[var(--user1-color)]'
+      : userType === 'user2'
+        ? 'bg-[var(--user2-color)]'
+        : 'bg-[var(--foreground)]'
 
   return (
     <div
       className={`relative w-10 h-10 rounded-full overflow-hidden flex items-center justify-center ${bgColor} ${className}`}
     >
       {children ||
-        (userType === "app" ? (
+        (userType === 'app' ? (
           <MessageCircle className="w-5 h-5 text-[var(--background)]" />
         ) : (
           <User className="w-5 h-5 text-white" />
         ))}
     </div>
-  );
-};
+  )
+}
 
 const Button = ({
   children,
-  variant = "default",
-  size = "default",
-  className = "",
+  variant = 'default',
+  size = 'default',
+  className = '',
   ...props
 }: ButtonProps) => {
   const variantClasses: Record<ButtonVariant, string> = {
     default:
-      "bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)]",
+      'bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--hover-dark)] dark:hover:bg-[var(--hover-light-mode)]',
     ghost:
-      "bg-transparent hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)]",
-  };
+      'bg-transparent hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)]',
+  }
 
   const sizeClasses: Record<ButtonSize, string> = {
-    default: "h-10 px-4 py-2",
-    icon: "h-10 w-10 p-2 flex items-center justify-center",
-  };
+    default: 'h-10 px-4 py-2',
+    icon: 'h-10 w-10 p-2 flex items-center justify-center',
+  }
 
   return (
     <button
@@ -88,38 +88,38 @@ const Button = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
-const Input = ({ className = "", ...props }: InputProps) => (
+const Input = ({ className = '', ...props }: InputProps) => (
   <input
     className={`h-10 px-3 py-2 rounded-md border border-[var(--border-color)] bg-[var(--background)] ${className}`}
     {...props}
   />
-);
+)
 
-const Card = ({ children, className = "" }: CardProps) => (
+const Card = ({ children, className = '' }: CardProps) => (
   <div
     className={`rounded-lg border border-[var(--border-color)] bg-[var(--background)] shadow-sm ${className}`}
   >
     {children}
   </div>
-);
+)
 
-const CardHeader = ({ children, className = "" }: CardProps) => (
+const CardHeader = ({ children, className = '' }: CardProps) => (
   <div className={`p-4 ${className}`}>{children}</div>
-);
+)
 
-const CardContent = ({ children, className = "" }: CardProps) => (
+const CardContent = ({ children, className = '' }: CardProps) => (
   <div className={`p-4 pt-0 ${className}`}>{children}</div>
-);
+)
 
-const CardFooter = ({ children, className = "" }: CardProps) => (
+const CardFooter = ({ children, className = '' }: CardProps) => (
   <div className={`p-4 ${className}`}>{children}</div>
-);
+)
 
 export default function Home() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('')
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
@@ -143,7 +143,7 @@ export default function Home() {
           font-[family-name:var(--font-geist-mono)]"
           >
             <li className="mb-2 tracking-[-.01em]">
-              Real-time messaging with{" "}
+              Real-time messaging with{' '}
               <code
                 className="bg-[var(--muted-bg)] px-1 py-0.5 rounded 
               font-[family-name:var(--font-geist-mono)] font-semibold"
@@ -161,7 +161,7 @@ export default function Home() {
 
           <div className="flex gap-4 items-center flex-col sm:flex-row">
             <Link
-              href={"/register"}
+              href={'/register'}
               className="rounded-full border border-solid border-transparent transition-colors flex items-center 
               justify-center bg-[var(--foreground)] text-[var(--background)] gap-2 hover:bg-[var(--hover-dark)] 
               dark:hover:bg-[var(--hover-light-mode)] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 
@@ -302,5 +302,5 @@ export default function Home() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
