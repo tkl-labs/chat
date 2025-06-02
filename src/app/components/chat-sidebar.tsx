@@ -26,7 +26,7 @@ export default function ChatSidebar() {
   const [groups, setGroups] = useState<Group[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const {user, logout} = useUser();
+  const { user, logout } = useUser()
 
   useEffect(() => {
     const fetchGroups = async () => {

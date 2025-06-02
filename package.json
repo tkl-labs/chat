@@ -1,10 +1,16 @@
 {
   "name": "tkl-chat",
   "version": "0.1.0",
+  "description": "A cross-platform chat room.",
+  "homepage": "https://github.com/tkl-labs/chat#readme",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tkl-labs/chat.git"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack && next export",
+    "build": "next build --turbopack",
     "start": "npx serve@latest out",
     "lint": "next lint",
     "tauri": "tauri",
@@ -33,5 +39,10 @@
     "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
 }

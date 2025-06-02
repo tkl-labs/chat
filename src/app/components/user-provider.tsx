@@ -1,6 +1,12 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react'
 import api from '@/lib/axios'
 import { useRouter } from 'next/navigation'
 import { User } from '@/lib/db-types'
@@ -86,11 +92,7 @@ export function UserProvider({ children }: UserProviderProps) {
     checkAuth,
   }
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  )
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
 
 export function useUser() {
