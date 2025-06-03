@@ -74,14 +74,16 @@ export function UserProvider({ children }: UserProviderProps) {
 
   // Check authentication on mount
   useEffect(() => {
-    const initializeAuth = async () => {
+  const initializeAuth = async () => {
+    if (user === null) {
       setLoading(true)
       await checkAuth()
       setLoading(false)
     }
+  }
 
-    initializeAuth()
-  }, [])
+  initializeAuth()
+}, [user])
 
   const value: UserContextType = {
     user,

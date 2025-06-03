@@ -329,63 +329,67 @@ export default function ProfilePage() {
     }))
   }
 
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        resolve(reader.result as string)
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // Create FormData for multipart/form-data request
-      const formDataToSend = new FormData()
       let hasChanges = false
 
-      // Compare each field and only include changed ones
+      // Build the payload as a plain JS object (JSON)
+      const payload: any = {}
+
       if (formData.username !== profile.username) {
-        formDataToSend.append('username', formData.username)
+        payload.username = formData.username
         hasChanges = true
       }
       if (formData.email !== profile.email) {
-        formDataToSend.append('email', formData.email)
+        payload.email = formData.email
         hasChanges = true
       }
       if (formData.phone_number !== profile.phone_number) {
-        formDataToSend.append('phone_number', formData.phone_number)
+        payload.phone_number = formData.phone_number
         hasChanges = true
       }
       if (formData.bio !== profile.bio) {
-        formDataToSend.append('bio', formData.bio || '')
+        payload.bio = formData.bio || ''
         hasChanges = true
       }
 
-      // Add profile picture if there's one
       if (croppedImageBlob) {
-        formDataToSend.append(
-          'profile_pic',
-          croppedImageBlob,
-          'profile-pic.jpg',
-        )
+        const base64 = await blobToBase64(croppedImageBlob)
+        payload.profile_pic = base64
         hasChanges = true
       }
 
-      // Only send request if there are changes
       if (!hasChanges) {
         setIsEditing(false)
         return
       }
 
-      // Send single request to /profile with all changes
-      const response = await api.patch('/profile', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const response = await api.patch('/api/profile', payload)
 
-      // Update the profile state with response data
-      const updatedProfile = response.data
+      const updatedProfile = {
+        ...profile,
+        ...payload,
+      }
+
       setProfile(updatedProfile)
       setFormData(updatedProfile)
       setIsEditing(false)
 
-      // Clean up image states
+      // Clean up
       setCroppedImageBlob(null)
       if (croppedImageUrl) {
         URL.revokeObjectURL(croppedImageUrl)
