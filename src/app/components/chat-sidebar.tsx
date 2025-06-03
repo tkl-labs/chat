@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import {
   MessageCircle,
   Search,
@@ -11,7 +11,6 @@ import {
   UserIcon,
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
-import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ChatSidebarSkeleton from './skeletons'
@@ -22,7 +21,6 @@ import Image from 'next/image'
 
 export default function ChatSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
   const { showNotification } = useNotification()
   const [groups, setGroups] = useState<Group[]>([])
   const [loading, setLoading] = useState(true)
@@ -65,7 +63,7 @@ export default function ChatSidebar() {
 
   const handleLogOut = async () => {
     try {
-      const response = logout()
+      logout()
       showNotification('success', 'Logged out successfully', 'Goodbye!')
     } catch (error) {
       console.error('Error logging out:', error)
