@@ -29,7 +29,7 @@ const fetchCsrfToken = async (): Promise<string | null> => {
 api.interceptors.request.use(
   async (config) => {
     const method = config.method?.toLowerCase()
-    if (['post', 'put', 'delete'].includes(method || '')) {
+    if (['post', 'put', 'patch', 'delete'].includes(method || '')) {
       if (!csrfToken) {
         await fetchCsrfToken() // Fetch if not cached
       }
@@ -48,19 +48,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
+      originalRequest._retry = true
       try {
-        await api.post('/auth/refresh', {}, { withCredentials: true });
-        console.log('Token refreshed successfully');
-        return axios(originalRequest);
+        await api.post('/auth/refresh', {}, { withCredentials: true })
+        console.log('Token refreshed successfully')
+        return axios(originalRequest)
       } catch (refreshError) {
-        window.location.href = '/login'; // Redirect to login page
-        console.error('Failed to refresh token', refreshError);
-        return Promise.reject(refreshError);
+        window.location.href = '/login' // Redirect to login page
+        console.error('Failed to refresh token', refreshError)
+        return Promise.reject(refreshError)
       }
     }
-    return Promise.reject(error);
-  }
+    return Promise.reject(error)
+  },
 )
 export default api
