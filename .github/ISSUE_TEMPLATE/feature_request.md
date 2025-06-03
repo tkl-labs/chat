@@ -1,10 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: "[FEAT]: Insert title here"
+title: '[FEAT]: Insert title here'
 labels: enhancement, help wanted
 assignees: KoushicSumathiKumar, LewisRye, TaiseiYokoshima
-
 ---
 
 **Is your feature request related to a problem? Please describe.**

@@ -10,6 +10,14 @@ import api from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { useNotification } from '../components/notification-provider'
 
+interface ProfileUpdatePayload {
+  username?: string
+  email?: string
+  phone_number?: string
+  bio?: string
+  profile_pic?: string
+}
+
 interface CropState {
   x: number
   y: number
@@ -347,8 +355,8 @@ export default function ProfilePage() {
     try {
       let hasChanges = false
 
-      // Build the payload as a plain JS object (JSON)
-      const payload: any = {}
+      // Build the payload as a JSON
+      const payload: ProfileUpdatePayload = {}
 
       if (formData.username !== profile.username) {
         payload.username = formData.username
@@ -379,6 +387,7 @@ export default function ProfilePage() {
       }
 
       const response = await api.patch('/api/profile', payload)
+      console.log(response)
 
       const updatedProfile = {
         ...profile,
