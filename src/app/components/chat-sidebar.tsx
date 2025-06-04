@@ -180,7 +180,7 @@ export default function ChatSidebar() {
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-[var(--user-loading-color)] flex items-center justify-center">
                 {user?.profile_pic ? (
                   <Image
                     src={user.profile_pic}
