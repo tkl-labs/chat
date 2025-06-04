@@ -55,13 +55,16 @@ export default function ChatSidebarSkeleton() {
 
       <div className="p-2 border-t border-[var(--border-color)]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16"></div>
+          <div className="flex items-center gap-2 px-2 py-2 rounded-md bg-transparent">
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse flex items-center justify-center"></div>
+            </div>
+            <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse w-20"></div>
           </div>
-          <div className="flex">
-            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse mx-1"></div>
-            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse mx-1"></div>
+
+          <div className="flex gap-4 mr-2">
+            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+            <div className="w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
           </div>
         </div>
       </div>

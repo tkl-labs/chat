@@ -1,6 +1,5 @@
 'use client'
 
-import { AxiosError } from 'axios'
 import React, {
   createContext,
   useContext,
@@ -42,19 +41,9 @@ export function UserProvider({ children }: UserProviderProps) {
         return true
       }
       return false
-    } catch (error: unknown) {
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        (error as AxiosError).isAxiosError &&
-        (error as AxiosError).response?.status === 401
-      ) {
-        // Unauthorized - don't log an error, just reset user
-        setUser(null)
-      } else {
-        // Log errors that are not 401
-        console.error('Auth check failed:', error)
-      }
+    } catch (error) {
+      console.error('Auth check failed:', error)
+      setUser(null)
       return false
     }
   }
@@ -86,7 +75,7 @@ export function UserProvider({ children }: UserProviderProps) {
   // Check authentication on mount
   useEffect(() => {
     const initializeAuth = async () => {
-      if (user === null) {
+      if (user && user?.username.length > 1) {
         setLoading(true)
         await checkAuth()
         setLoading(false)
