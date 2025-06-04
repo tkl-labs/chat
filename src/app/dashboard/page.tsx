@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import Link from 'next/link'
+import { MessageCircle } from 'lucide-react'
 
 export default function Dashboard() {
   return (
@@ -22,5 +22,5 @@ export default function Dashboard() {
         </Link>
       </div>
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   MessageCircle,
   Search,
@@ -8,71 +8,70 @@ import {
   Settings,
   LogOut,
   MessageCirclePlus,
-} from "lucide-react";
-import { Group } from "@/lib/db-types";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import ChatSidebarSkeleton from "./skeletons";
-import { getMockData } from "@/lib/mock-data";
-import api from "@/lib/axios";
-import { useNotification } from "./notification-provider";
+  UserIcon,
+} from 'lucide-react'
+import { Group } from '@/lib/db-types'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import ChatSidebarSkeleton from './skeletons'
+import { getMockData } from '@/lib/mock-data'
+import { useNotification } from './notification-provider'
+import { useUser } from './user-provider'
+import Image from 'next/image'
 
 export default function ChatSidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { showNotification } = useNotification();
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const pathname = usePathname()
+  const { showNotification } = useNotification()
+  const [groups, setGroups] = useState<Group[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const { user, logout } = useUser()
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         // Use the same mock data as the chat page
-        const mockData = await getMockData();
+        const mockData = await getMockData()
 
         // Transform DM group names to show only the other person's name
         const transformedGroups = mockData.groups.map((group) => {
           if (group.is_dm) {
             // Extract just the other person's name from "Koushic Sumathi Kumar & Other Name"
-            const nameParts = group.name.split(" & ");
-            const otherPersonName = nameParts[1] || nameParts[0];
+            const nameParts = group.name.split(' & ')
+            const otherPersonName = nameParts[1] || nameParts[0]
             return {
               ...group,
               name: otherPersonName,
-            };
+            }
           }
-          return group;
-        });
+          return group
+        })
 
-        setGroups(transformedGroups);
+        setGroups(transformedGroups)
       } catch (error) {
-        console.log("Error fetching groups:", error);
+        console.log('Error fetching groups:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchGroups();
-  }, []);
+    }
+    fetchGroups()
+  }, [])
 
   const filteredGroups = groups.filter((group) =>
-    group.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-  );
+    group.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()),
+  )
 
   const handleLogOut = async () => {
     try {
-      const response = await api.post("/auth/logout", {});
-
-      showNotification("success", response.data?.detail, "Goodbye!");
-      router.push("/");
+      logout()
+      showNotification('success', 'Logged out successfully', 'Goodbye!')
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error('Error logging out:', error)
     }
-  };
+  }
 
   if (loading) {
-    return <ChatSidebarSkeleton />;
+    return <ChatSidebarSkeleton />
   }
 
   return (
@@ -126,8 +125,8 @@ export default function ChatSidebar() {
                   className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
                         dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
                           pathname === `/chat/${group.id}`
-                            ? "bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]"
-                            : ""
+                            ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
+                            : ''
                         }`}
                 >
                   <div
@@ -151,8 +150,8 @@ export default function ChatSidebar() {
                   className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
                         dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
                           pathname === `/chat/${group.id}`
-                            ? "bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]"
-                            : ""
+                            ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
+                            : ''
                         }`}
                 >
                   <div
@@ -177,38 +176,46 @@ export default function ChatSidebar() {
         <div className="flex items-center justify-between">
           <Link
             href="/profile"
-            className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
+            className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
-              <span className="text-white text-sm font-medium">
-                <span className="text-white text-sm font-medium">
-                  {"undefined".charAt(0)}
-                </span>
-              </span>
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-[var(--user2-color)] flex items-center justify-center">
+                {user?.profile_pic ? (
+                  <Image
+                    src={user.profile_pic}
+                    alt={user.username}
+                    className="w-full h-full rounded-full"
+                    width={760}
+                    height={760}
+                  />
+                ) : (
+                  <UserIcon className="w-4 h-4 text-white" />
+                )}
+              </div>
             </div>
-            <div className="truncate">{"undefined"}</div>
+            <div className="truncate flex-1">{user?.username}</div>
           </Link>
 
           <div className="flex">
             <Link
               href="/settings"
-              className="p-2 rounded-md hover:bg-[var(--hover-light)]
+              className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-6 h-6" />
             </Link>
 
             <button
               onClick={handleLogOut}
-              className="p-2 rounded-md hover:bg-[var(--hover-light)]
+              className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors cursor-pointer"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-6 h-6" />
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

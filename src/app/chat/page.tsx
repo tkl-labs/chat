@@ -1,108 +1,108 @@
-"use client";
+'use client'
 
-import type React from "react";
-import { useState, useEffect, useRef, use } from "react";
-import { Send, Info, Phone, Video, Search, User } from "lucide-react";
-import ChatMessage from "@/app/components/chat-message";
-import { getMockData } from "@/lib/mock-data";
+import type React from 'react'
+import { useState, useEffect, useRef, use } from 'react'
+import { Send, Info, Phone, Video, Search, User } from 'lucide-react'
+import ChatMessage from '@/app/components/chat-message'
+import { getMockData } from '@/lib/mock-data'
 
 type Message = {
-  id: string;
-  content: string;
-  timestamp: string;
-  senderId: string;
-  senderName: string;
-};
+  id: string
+  content: string
+  timestamp: string
+  senderId: string
+  senderName: string
+}
 
 type GroupInfo = {
-  name: string;
-  isGroup: boolean;
-  members?: number;
-};
+  name: string
+  isGroup: boolean
+  members?: number
+}
 
 export default function ChatPage({
   params,
 }: {
-  params: Promise<{ groupId: string }>;
+  params: Promise<{ groupId: string }>
 }) {
-  const resolvedParams = use(params);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const resolvedParams = use(params)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [newMessage, setNewMessage] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const email = localStorage.getItem("user-email");
-      if (!email) return;
+      const email = localStorage.getItem('user-email')
+      if (!email) return
 
       try {
-        const mockData = await getMockData();
-        const user = mockData.users.find((u) => u.email === email);
+        const mockData = await getMockData()
+        const user = mockData.users.find((u) => u.email === email)
 
         if (user) {
-          setCurrentUserId(user.id);
+          setCurrentUserId(user.id)
         } else {
-          console.warn("User not found for stored email.");
+          console.warn('User not found for stored email.')
         }
       } catch (error) {
-        console.error("Error fetching user from mock data:", error);
+        console.error('Error fetching user from mock data:', error)
       }
-    };
+    }
 
-    fetchCurrentUser();
-  }, []);
+    fetchCurrentUser()
+  }, [])
 
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUserId) return
 
     const fetchChatData = async () => {
       try {
-        setLoading(true);
-        const mockData = await getMockData();
-        const { users, groups, groupMembers, messages: allMessages } = mockData;
+        setLoading(true)
+        const mockData = await getMockData()
+        const { users, groups, groupMembers, messages: allMessages } = mockData
 
         const currentGroup = groups.find(
-          (group) => group.id === resolvedParams.groupId
-        );
+          (group) => group.id === resolvedParams.groupId,
+        )
 
         if (!currentGroup) {
-          console.error(`Group with id ${resolvedParams.groupId} not found`);
-          return;
+          console.error(`Group with id ${resolvedParams.groupId} not found`)
+          return
         }
 
         const currentGroupMembers = groupMembers.filter(
-          (member) => member.group_id === resolvedParams.groupId
-        );
+          (member) => member.group_id === resolvedParams.groupId,
+        )
 
-        const currentUser = users.find((u) => u.id === currentUserId);
+        const currentUser = users.find((u) => u.id === currentUserId)
 
-        let displayName = currentGroup.name;
+        let displayName = currentGroup.name
 
         if (currentGroup.is_dm && currentUser) {
           const otherUser = users.find((u) =>
             currentGroupMembers.some(
-              (m) => m.user_id === u.id && u.id !== currentUser.id
-            )
-          );
-          displayName = otherUser?.username || "Unknown";
+              (m) => m.user_id === u.id && u.id !== currentUser.id,
+            ),
+          )
+          displayName = otherUser?.username || 'Unknown'
         }
 
         const groupInfoData: GroupInfo = {
           name: displayName,
           isGroup: !currentGroup.is_dm,
           members: currentGroup.is_dm ? undefined : currentGroupMembers.length,
-        };
+        }
 
         const groupMessages = allMessages
           .filter(
-            (msg) => msg.group_id === resolvedParams.groupId && !msg.is_deleted
+            (msg) => msg.group_id === resolvedParams.groupId && !msg.is_deleted,
           )
           .map((msg) => {
-            const sender = users.find((user) => user.id === msg.user_id);
-            const isCurrentUser = sender?.id === currentUserId;
+            const sender = users.find((user) => user.id === msg.user_id)
+            const isCurrentUser = sender?.id === currentUserId
 
             return {
               id: msg.id,
@@ -110,77 +110,77 @@ export default function ChatPage({
               timestamp: msg.created_at,
               senderId: msg.user_id,
               senderName: isCurrentUser
-                ? "You"
-                : sender?.username || "Unknown User",
-            };
+                ? 'You'
+                : sender?.username || 'Unknown User',
+            }
           })
           .sort(
             (a, b) =>
-              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
           )
           .map((msg) => ({
             ...msg,
             timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
+              hour: '2-digit',
+              minute: '2-digit',
             }),
-          }));
+          }))
 
-        setGroupInfo(groupInfoData);
-        setMessages(groupMessages);
+        setGroupInfo(groupInfoData)
+        setMessages(groupMessages)
       } catch (error) {
-        console.error("Error fetching chat data:", error);
+        console.error('Error fetching chat data:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchChatData();
-  }, [currentUserId, resolvedParams.groupId]);
+    fetchChatData()
+  }, [currentUserId, resolvedParams.groupId])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
+    e.preventDefault()
+    if (!newMessage.trim()) return
 
     try {
-      const mockData = await getMockData();
+      const mockData = await getMockData()
       const currentUser = mockData.users.find(
-        (user) => user.id === currentUserId
-      );
+        (user) => user.id === currentUserId,
+      )
 
       if (!currentUser) {
-        console.error("Current user not found");
-        return;
+        console.error('Current user not found')
+        return
       }
 
       const newMsg: Message = {
         id: Date.now().toString(),
         content: newMessage.trim(),
         timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+          hour: '2-digit',
+          minute: '2-digit',
         }),
         senderId: currentUser.id,
-        senderName: "You",
-      };
+        senderName: 'You',
+      }
 
-      setMessages((prev) => [...prev, newMsg]);
-      setNewMessage("");
+      setMessages((prev) => [...prev, newMsg])
+      setNewMessage('')
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error)
     }
-  };
+  }
 
   if (!currentUserId || loading) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--foreground)]"></div>
       </div>
-    );
+    )
   }
 
   if (!groupInfo) {
@@ -190,7 +190,7 @@ export default function ChatPage({
           <p className="text-[var(--muted-foreground)]">Group not found</p>
         </div>
       </div>
-    );
+    )
   }
   return (
     <div className="h-full flex flex-col">
@@ -199,8 +199,8 @@ export default function ChatPage({
           <div
             className={`w-10 h-10 rounded-full ${
               groupInfo.isGroup
-                ? "bg-[var(--foreground)]"
-                : "bg-[var(--user1-color)]"
+                ? 'bg-[var(--foreground)]'
+                : 'bg-[var(--user1-color)]'
             } flex items-center justify-center`}
           >
             {groupInfo.isGroup ? (
@@ -214,7 +214,7 @@ export default function ChatPage({
           <div>
             <h2 className="font-semibold">{groupInfo.name}</h2>
             <p className="text-xs text-[var(--muted-foreground)]">
-              {groupInfo.isGroup ? `${groupInfo.members} members` : "Online"}
+              {groupInfo.isGroup ? `${groupInfo.members} members` : 'Online'}
             </p>
           </div>
         </div>
@@ -249,10 +249,10 @@ export default function ChatPage({
               timestamp={message.timestamp}
               isCurrentUser={
                 message.senderId ===
-                messages.find((m) => m.senderName === "You")?.senderId
+                messages.find((m) => m.senderName === 'You')?.senderId
               }
               senderName={
-                message.senderName !== "You" ? message.senderName : undefined
+                message.senderName !== 'You' ? message.senderName : undefined
               }
             />
           ))
@@ -279,5 +279,5 @@ export default function ChatPage({
         </form>
       </div>
     </div>
-  );
+  )
 }

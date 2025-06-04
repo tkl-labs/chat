@@ -1,11 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  
+
+  --user-loading-color: #374151;
   --user1-color: #a855f7;
-  --user2-color: #22c55e; 
+  --user2-color: #22c55e;
   --muted-bg: rgba(0, 0, 0, 0.05);
   --border-color: rgba(0, 0, 0, 0.08);
   --hover-light: #f2f2f2;
@@ -29,7 +30,7 @@
     --foreground: #ededed;
     --muted-bg: rgba(255, 255, 255, 0.06);
     --muted-foreground: #a3a3a3;
-    --border-color: rgba(255, 255, 255, 0.145); 
+    --border-color: rgba(255, 255, 255, 0.145);
     --error-border-color: #f87171;
     --success-border-color: #4ade80;
   }
