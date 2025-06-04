@@ -58,7 +58,7 @@ export default function ProfilePage() {
     // Featch user profile on mount
     const fetchUserProfile = async () => {
       try {
-        const response = await api.get('/api/profile')
+        const response = await api.get('/profile/profile')
         console.log(response.data)
         setProfile(response.data)
         setFormData(response.data)
@@ -405,7 +405,7 @@ export default function ProfilePage() {
         return
       }
 
-      const response = await api.patch('/api/profile', payload)
+      const response = await api.patch('/profile/profile', payload)
       console.log(response)
 
       const updatedProfile = {

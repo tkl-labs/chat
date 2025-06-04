@@ -16,7 +16,7 @@ const api = axios.create({
 // Fetch CSRF token from server
 const fetchCsrfToken = async (): Promise<string | null> => {
   try {
-    const response = await api.get('/api/csrf')
+    const response = await api.get('/auth/csrf')
     csrfToken = response.data.csrf_token
     return csrfToken
   } catch (err) {

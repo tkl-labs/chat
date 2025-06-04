@@ -35,7 +35,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const checkAuth = async (): Promise<boolean> => {
     try {
       // Try to get user info from backend using the JWT cookie
-      const response = await api.get('/auth/me')
+      const response = await api.get('/profile/me')
       if (response.data) {
         setUser(response.data)
         return true
