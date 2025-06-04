@@ -1,10 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState, useRef, useCallback } from 'react'
 import { UserIcon, Camera, Upload, ZoomIn, ZoomOut, Move } from 'lucide-react'
-import { User } from '@/lib/db-types'
-import { useUser } from '@/app/components/user-provider'
 import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
@@ -25,13 +23,16 @@ interface CropState {
   rotation: number
 }
 
-export default function ProfilePage() {
-  const { user } = useUser()
+const defaultUser: ProfileUpdatePayload = {
+  username: '',
+  email: '',
+  phone_number: '',
+  bio: '',
+  profile_pic: '',
+}
 
-  if (!user) {
-    throw new Error('User must be defined at this point')
-  }
-  const [profile, setProfile] = useState<User>(user)
+export default function ProfilePage() {
+  const [profile, setProfile] = useState<ProfileUpdatePayload>(defaultUser)
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState(profile)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
@@ -52,6 +53,24 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    // Featch user profile on mount
+    const fetchUserProfile = async () => {
+      try {
+        const response = await api.get('/api/profile')
+        console.log(response.data)
+        setProfile(response.data)
+        setFormData(response.data)
+      } catch (err) {
+        const error = err as AxiosError<{ detail?: string }>
+        const message =
+          error.response?.data?.detail || 'Failed to load profile.'
+        showNotification('error', message, 'Error')
+      }
+    }
+    fetchUserProfile()
+  }, [showNotification])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -538,7 +557,7 @@ export default function ProfilePage() {
         <div className="flex flex-col sm:flex-row gap-6 items-center justify-center sm:items-start mb-6">
           <div className="relative">
             <div
-              className={`w-24 h-24 rounded-full bg-[var(--user2-color)] flex items-center justify-center overflow-hidden ${
+              className={`w-24 h-24 rounded-full bg-[var(--user-loading-color)] flex items-center justify-center overflow-hidden ${
                 isEditing
                   ? 'cursor-pointer hover:opacity-80 transition-opacity'
                   : ''
@@ -548,7 +567,7 @@ export default function ProfilePage() {
               {getDisplayImageUrl() ? (
                 <Image
                   src={getDisplayImageUrl()!}
-                  alt={profile.username}
+                  alt={profile.username || 'Profile Picture'}
                   className="w-full h-full rounded-full object-cover"
                   width={96}
                   height={96}
