@@ -12,20 +12,52 @@ import {
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
 import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import ChatSidebarSkeleton from './skeletons'
+import ChatSidebarSkeleton from '@/app/components/skeletons'
 import { getMockData } from '@/lib/mock-data'
-import { useNotification } from './notification-provider'
-import { useUser } from './user-provider'
+import { useNotification } from '@/app/components/context/notification-provider'
 import Image from 'next/image'
+import api from '@/lib/axios'
+import { AxiosError } from 'axios'
 
-export default function ChatSidebar() {
+interface ProfilePayload {
+  username: string
+  email: string
+  phone_number: string
+  bio?: string
+  profile_pic?: string
+}
+
+export default function ChatSidebar({
+  onSelect,
+}: {
+  onSelect: (view: 'welcome' | 'profile') => void
+}) {
   const pathname = usePathname()
+  const router = useRouter()
+  const [profile, setProfile] = useState<ProfilePayload>()
   const { showNotification } = useNotification()
   const [groups, setGroups] = useState<Group[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const { user, logout } = useUser()
+
+  useEffect(() => {
+    // Featch user profile on mount
+    const fetchUserProfile = async () => {
+      try {
+        const response = await api.get('/profile/profile')
+        console.log(response.data)
+        setProfile(response.data)
+      } catch (err) {
+        const error = err as AxiosError<{ detail?: string }>
+        const message =
+          error.response?.data?.detail || 'Failed to load profile.'
+        showNotification('error', message, 'Error')
+      }
+    }
+    fetchUserProfile()
+  }, [showNotification])
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -63,8 +95,13 @@ export default function ChatSidebar() {
 
   const handleLogOut = async () => {
     try {
-      logout()
-      showNotification('success', 'Logged out successfully', 'Goodbye!')
+      const response = await api.post('/auth/logout')
+
+      // Testing User UX
+      setTimeout(() => {
+        router.push('/login')
+      }, 500)
+      showNotification('success', response.data?.detail, 'Goodbye!')
     } catch (error) {
       console.error('Error logging out:', error)
     }
@@ -174,17 +211,17 @@ export default function ChatSidebar() {
       </div>
       <div className="p-2 border-t border-[var(--border-color)]">
         <div className="flex items-center justify-between">
-          <Link
-            href="/profile"
+          <button
+            onClick={() => onSelect('profile')}
             className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
           >
             <div className="relative">
               <div className="w-8 h-8 rounded-full bg-[var(--user-loading-color)] flex items-center justify-center">
-                {user?.profile_pic ? (
+                {profile?.profile_pic ? (
                   <Image
-                    src={user.profile_pic}
-                    alt={user.username}
+                    src={profile.profile_pic}
+                    alt={profile.username || 'User Profile'}
                     className="w-full h-full rounded-full"
                     width={760}
                     height={760}
@@ -194,8 +231,8 @@ export default function ChatSidebar() {
                 )}
               </div>
             </div>
-            <div className="truncate flex-1">{user?.username}</div>
-          </Link>
+            <div className="truncate flex-1">{profile?.username}</div>
+          </button>
 
           <div className="flex">
             <Link

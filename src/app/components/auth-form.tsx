@@ -11,19 +11,17 @@ import {
   CheckCircle,
   XCircle,
 } from 'lucide-react'
-import { useNotification } from './notification-provider'
+import { useNotification } from '@/app/components/context/notification-provider'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
-import { useUser } from '@/app/components/user-provider'
 
 type FormMode = 'login' | 'register'
 
 export default function AuthForm({ mode }: { mode: FormMode }) {
   const router = useRouter()
   const { showNotification } = useNotification()
-  const { login } = useUser()
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -123,11 +121,6 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
           password: formData.password,
         })
 
-        if (response.data) {
-          login(response.data)
-          console.log('User registered and logged in:', response.data)
-        }
-
         // at this point, login was successful
         showNotification('success', response.data?.detail, 'Welcome back!')
         router.push('/dashboard')
@@ -190,7 +183,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
                       rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
-                      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+                      focus:border-transparent transition-all duration-300
                       text-[var(--foreground)] font-medium"
                       placeholder="Enter your username"
                       required
@@ -222,7 +215,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       onChange={handleChange}
                       className="block w-full pl-10 pr-3 py-3 border border-[var(--border-color)]
                       rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]
-                      focus:ring-offset-2 focus:border-transparent transition-all duration-300
+                      focus:border-transparent transition-all duration-300
                       text-[var(--foreground)] font-medium"
                       placeholder="Enter your password"
                       required
@@ -253,12 +246,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.username}
                       onChange={handleChange}
                       className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
-                      focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                      focus:outline-none focus:ring-1 transition-all duration-300 border
                       ${
                         touchedFields.username
                           ? isValidUsername(formData.username)
-                            ? 'border-[var(--success-border-color)]'
-                            : 'border-[var(--error-border-color)]'
+                            ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                            : 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
                           : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                       }
                     `}
@@ -313,12 +306,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.email}
                       onChange={handleChange}
                       className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
-                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        focus:outline-none focus:ring-1 transition-all duration-300 border
                         ${
                           touchedFields.email
                             ? isValidEmail(formData.email)
-                              ? 'border-[var(--success-border-color)]'
-                              : 'border-[var(--error-border-color)]'
+                              ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                              : 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}
@@ -372,12 +365,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.phone_number}
                       onChange={handlePhoneChange}
                       className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
-                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        focus:outline-none focus:ring-1 transition-all duration-300 border
                         ${
                           touchedFields.phone_number
                             ? isValidPhoneNumber(formData.phone_number)
-                              ? 'border-[var(--success-border-color)]'
-                              : 'border-[var(--error-border-color)]'
+                              ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                              : 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}
@@ -432,12 +425,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.password}
                       onChange={handleChange}
                       className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
-                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        focus:outline-none focus:ring-1 transition-all duration-300 border
                         ${
                           touchedFields.password
                             ? isValidPassword(formData.password)
-                              ? 'border-[var(--success-border-color)]'
-                              : 'border-[var(--error-border-color)]'
+                              ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                              : 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}
@@ -563,7 +556,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       className={`block w-full pl-10 pr-3 py-3 rounded-lg text-[var(--foreground)] font-medium
-                        focus:outline-none focus:ring-1 focus:ring-offset-2 transition-all duration-300 border
+                        focus:outline-none focus:ring-1 transition-all duration-300 border
                         ${
                           touchedFields.confirmPassword
                             ? isValidPassword(formData.password) &&
@@ -571,8 +564,8 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                                 formData.password,
                                 formData.confirmPassword,
                               )
-                              ? 'border-[var(--success-border-color)]'
-                              : 'border-[var(--error-border-color)]'
+                              ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                              : 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}

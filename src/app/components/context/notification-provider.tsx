@@ -8,7 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react'
-import Notification from './notification'
+import Notification from '@/app/components/notification'
 import { type NotificationType } from '@/lib/notification-store'
 import {
   notificationStore,
