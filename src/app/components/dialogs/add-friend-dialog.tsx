@@ -42,7 +42,7 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
     setLoading(true)
 
     try {
-      const response = await api.patch('/friend/add', username)
+      const response = await api.post('/friend/add', { username })
       console.log(response)
       showNotification('success', 'Friend Request sent successfully!', 'Success')
     } catch (err) {

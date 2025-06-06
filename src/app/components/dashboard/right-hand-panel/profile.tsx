@@ -65,7 +65,7 @@ export default function ProfilePage() {
     // Featch user profile on mount
     const fetchUserProfile = async () => {
       try {
-        const response = await api.get('/profile/profile')
+        const response = await api.get('/profile/self')
         console.log(response.data)
         setProfile(response.data)
         setFormData(response.data)
@@ -392,12 +392,6 @@ export default function ProfilePage() {
     return /^[a-zA-Z0-9]{0,500}$/.test(bio)
   }
 
-  let isFormValid =
-    isValidUsername(formData.username || '') &&
-    isValidEmail(formData.email || '') &&
-    isValidPhoneNumber(formData.phone_number || '') &&
-    isValidBio(formData.bio || '')
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -436,7 +430,7 @@ export default function ProfilePage() {
         return
       }
 
-      const response = await api.patch('/profile/profile', payload)
+      const response = await api.patch('/profile/self', payload)
       console.log(response)
 
       const updatedProfile = {

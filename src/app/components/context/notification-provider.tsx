@@ -120,7 +120,7 @@ const Notification: React.FC<NotificationProps> = ({
     <div
       className={`
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
-        transform transition-all duration-300 ease-out max-w-sm min-w-80, 
+        transform transition-all duration-300 ease-out, 
         ${getBackgroundColor()}
         ${isAnimating && !isExiting 
           ? 'translate-x-0 opacity-100 scale-100' 
