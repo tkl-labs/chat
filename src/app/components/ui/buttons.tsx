@@ -15,12 +15,15 @@ export const Button = ({
   variant = 'default',
   size = 'default',
   className = '',
+  disabled = false,
   ...props
 }: ButtonProps) => {
-  let base = 'flex items-center justify-center gap-2 rounded-md font-medium transition-colors cursor-pointer ';
+  let base = 'flex items-center justify-center gap-2 rounded-md font-medium transition-colors ';
   let sizeStyle = '';
   let variantStyle = '';
+  let disabledStyle = '';
 
+  // Size
   switch (size) {
     case 'sm':
       sizeStyle = 'py-2 px-3 text-sm ';
@@ -32,18 +35,29 @@ export const Button = ({
       sizeStyle = 'py-3 px-4 ';
   }
 
+  // Variant
   switch (variant) {
     case 'outline':
-      variantStyle = 'border border-[var(--border-color)] hover:border-transparent hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] ';
+      variantStyle =
+        'border border-[var(--border-color)] hover:border-transparent hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] ';
       break;
     default:
-      variantStyle = 'bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 ';
+      variantStyle =
+        'bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 ';
+  }
+
+  // Disabled
+  if (disabled) {
+    disabledStyle =
+      'opacity-50 cursor-not-allowed pointer-events-none ';
+  } else {
+    base += 'cursor-pointer ';
   }
 
   return (
     <button
-      type="button"
-      className={base + sizeStyle + variantStyle + className}
+      className={`${base}${sizeStyle}${variantStyle}${disabledStyle}${className}`}
+      disabled={disabled}
       {...props}
     >
       {children}
