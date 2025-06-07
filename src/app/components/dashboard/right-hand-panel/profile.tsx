@@ -389,7 +389,7 @@ export default function ProfilePage() {
   }
 
   const isValidBio = (bio: string) => {
-    return /^[a-zA-Z0-9]{0,500}$/.test(bio)
+    return bio.length <= 500
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

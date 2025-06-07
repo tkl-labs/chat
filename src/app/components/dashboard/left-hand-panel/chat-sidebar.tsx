@@ -4,23 +4,25 @@ import { useState, useEffect } from 'react'
 import {
   MessageCircle,
   Search,
-  Users,
   Settings,
   LogOut,
   UserIcon,
   Plus,
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
-import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ChatSidebarSkeleton from '@/app/components/skeletons'
 import { getMockData } from '@/lib/mock-data'
 import { useNotification } from '@/app/components/context/notification-provider'
 import { AddFriendDialog } from '@/app/components/dialogs/add-friend-dialog'
+import ChatsTab from '@/app/components/dashboard/left-hand-panel/tabs/chats-tab'
+import FriendsTab from '@/app/components/dashboard/left-hand-panel/tabs/friends-tab'
+import RequestsTab from '@/app/components/dashboard/left-hand-panel/tabs/requests-tab'
 import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { request } from 'http'
 
 interface ProfilePayload {
   username: string
@@ -39,24 +41,38 @@ interface Friend {
   is_online?: boolean
 }
 
-type TabType = 'chats' | 'friends'
+interface FriendRequest {
+  requesting_user_id: string
+  username: string
+  email: string
+  phone_number?: string
+  bio?: string
+  profile_pic?: string
+  sent_at: string
+}
+
+type TabType = 'chats' | 'friends' | 'requests'
 
 export default function ChatSidebar({
   onSelect,
 }: {
   onSelect: (view: 'welcome' | 'profile') => void
 }) {
-  const pathname = usePathname()
   const router = useRouter()
   const [profile, setProfile] = useState<ProfilePayload>()
   const { showNotification } = useNotification()
   const [groups, setGroups] = useState<Group[]>([])
   const [friends, setFriends] = useState<Friend[]>([])
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [friendsLoading, setFriendsLoading] = useState(false)
+  const [requestsLoading, setRequestsLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddFriendOpen, setIsAddFriendOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chats')
+  const [processingRequests, setProcessingRequests] = useState<Set<string>>(
+    new Set(),
+  )
 
   useEffect(() => {
     // Fetch user profile on mount
@@ -122,22 +138,81 @@ export default function ChatSidebar({
     }
   }
 
+  const fetchFriendRequests = async () => {
+    if (friendRequests.length > 0) return // Don't fetch if already loaded
+
+    setRequestsLoading(true)
+    try {
+      const response = await api.get('/friend/requests')
+
+      // Backend returns requests with "from_user_id", normalise to "requesting_user_id"
+      // Backend returns requests with "from_username", normalise to "username"
+      const normalisedRequests = response.data.map((req: any) => ({
+        ...req,
+        requesting_user_id: req.from_user_id,
+        username: req.from_username,
+      }))
+      setFriendRequests(normalisedRequests)
+      console.log('Friend requests fetched:', normalisedRequests)
+    } catch (err) {
+      const error = err as AxiosError<{ detail?: string }>
+      const message =
+        error.response?.data?.detail || 'Failed to load friend requests.'
+      showNotification('error', message, 'Error')
+    } finally {
+      setRequestsLoading(false)
+    }
+  }
+
+  const handleFriendRequestAction = async (
+    requesting_user_id: string,
+    action: 'accept' | 'reject',
+  ) => {
+    setProcessingRequests((prev) => new Set([...prev, requesting_user_id]))
+
+    try {
+      const accept = action === 'accept'
+      const response = await api.patch('/friend/add', {
+        requesting_user_id: requesting_user_id,
+        accept: accept,
+      })
+
+      console.log(`Friend request ${action}ed:`, response.data)
+      setFriendRequests((prev) => prev.filter((req) => req.requesting_user_id !== requesting_user_id))
+      // Remove the request from the list
+
+      // If accepted, refresh friends list
+      if (action === 'accept') {
+        setFriends([]) // Clear to force refetch
+        if (activeTab === 'friends') {
+          fetchFriends()
+        }
+      }
+
+      const actionText = action === 'accept' ? 'accepted' : 'rejected'
+      showNotification('success', `Friend request ${actionText}`, 'Success')
+    } catch (err) {
+      const error = err as AxiosError<{ detail?: string }>
+      const message =
+        error.response?.data?.detail || `Failed to ${action} friend request.`
+      showNotification('error', message, 'Error')
+    } finally {
+      setProcessingRequests((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(requesting_user_id)
+        return newSet
+      })
+    }
+  }
+
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab)
     if (tab === 'friends') {
       fetchFriends()
+    } else if (tab === 'requests') {
+      fetchFriendRequests()
     }
   }
-
-  const filteredGroups = groups.filter((group) =>
-    group.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()),
-  )
-
-  const filteredFriends = friends.filter((friend) =>
-    friend.username
-      .toLocaleLowerCase()
-      .includes(searchTerm.toLocaleLowerCase()),
-  )
 
   const handleLogOut = async () => {
     try {
@@ -153,13 +228,40 @@ export default function ChatSidebar({
     }
   }
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'chats':
+        return <ChatsTab groups={groups} searchTerm={searchTerm} />
+      case 'friends':
+        return (
+          <FriendsTab
+            friends={friends}
+            searchTerm={searchTerm}
+            loading={friendsLoading}
+          />
+        )
+      case 'requests':
+        return (
+          <RequestsTab
+            requests={friendRequests}
+            searchTerm={searchTerm}
+            loading={requestsLoading}
+            processingRequests={processingRequests}
+            onRequestAction={handleFriendRequestAction}
+          />
+        )
+      default:
+        return null
+    }
+  }
+
   if (loading) {
     return <ChatSidebarSkeleton />
   }
 
   return (
     <>
-      <div className="w-screen sm:w-64 h-screen flex flex-col border-r border-[var(--border-color)]">
+      <div className="w-screen sm:w-2xs h-screen flex flex-col border-r border-[var(--border-color)]">
         <div className="p-4 border-b border-[var(--border-color)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -178,7 +280,6 @@ export default function ChatSidebar({
         </div>
 
         <div className="p-2">
-          {/* Tabs */}
           <div className="flex bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)] rounded-md p-1">
             <button
               onClick={() => handleTabChange('chats')}
@@ -200,6 +301,21 @@ export default function ChatSidebar({
             >
               Friends
             </button>
+            <button
+              onClick={() => handleTabChange('requests')}
+              className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors relative ${
+                activeTab === 'requests'
+                  ? 'bg-[var(--background)] text-[var(--foreground)] shadow-sm'
+                  : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+              }`}
+            >
+              Requests
+              {friendRequests.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {friendRequests.length}
+                </span>
+              )}
+            </button>
           </div>
           <div className="relative mt-3">
             <Search
@@ -217,129 +333,7 @@ export default function ChatSidebar({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-2">
-          {activeTab === 'chats' ? (
-            // Chats Content
-            filteredGroups.length > 0 ? (
-              <div className="space-y-1">
-                <div className="px-2 py-1 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                  Groups
-                </div>
-                {filteredGroups
-                  .filter((group) => !group.is_dm)
-                  .map((group) => (
-                    <Link
-                      key={group.id}
-                      href={`/chat/${group.id}`}
-                      className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
-                          dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
-                            pathname === `/chat/${group.id}`
-                              ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
-                              : ''
-                          }`}
-                    >
-                      <div
-                        className="w-8 h-8 rounded-full bg-[var(--foreground)] text-[var(--background)]
-                          flex items-center justify-center"
-                      >
-                        <Users className="w-4 h-4" />
-                      </div>
-                      <div className="truncate">{group.name}</div>
-                    </Link>
-                  ))}
-                <div className="px-2 py-1 text-xs font-semibold text-[var(--muted-foreground)] uppercase mt-4">
-                  Direct Messages
-                </div>
-                {filteredGroups
-                  .filter((group) => group.is_dm)
-                  .map((group) => (
-                    <Link
-                      key={group.id}
-                      href={`/chat/${group.id}`}
-                      className={`flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
-                          dark:hover:bg-[var(--hover-dark-mode)] transition-colors ${
-                            pathname === `/chat/${group.id}`
-                              ? 'bg-[var(--hover-light)] dark:bg-[var(--hover-dark-mode)]'
-                              : ''
-                          }`}
-                    >
-                      <div
-                        className="w-8 h-8 rounded-full bg-[var(--user1-color)] text-[var(--background)]
-                          flex items-center justify-center"
-                      >
-                        <span className="text-white text-sm font-medium">
-                          {group.name.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="truncate">{group.name}</div>
-                    </Link>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-center py-4 text-[var(--muted-foreground)]">
-                No chats found
-              </div>
-            )
-          ) : (
-            // Friends Content
-            <div>
-              {friendsLoading ? (
-                <div className="text-center py-4 text-[var(--muted-foreground)]">
-                  Loading friends...
-                </div>
-              ) : filteredFriends.length > 0 ? (
-                <div className="space-y-1">
-                  <div className="px-2 py-1 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                    Friends ({filteredFriends.length})
-                  </div>
-                  {filteredFriends.map((friend) => (
-                    <div
-                      key={friend.username}
-                      className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
-                        dark:hover:bg-[var(--hover-dark-mode)] transition-colors cursor-pointer"
-                    >
-                      <div className="relative">
-                        <div
-                          className="w-8 h-8 rounded-full bg-[var(--user1-color)] text-[var(--background)]
-                          flex items-center justify-center"
-                        >
-                          {friend.profile_pic ? (
-                            <Image
-                              src={friend.profile_pic}
-                              alt={friend.username}
-                              className="w-full h-full rounded-full"
-                              width={32}
-                              height={32}
-                            />
-                          ) : (
-                            <span className="text-white text-sm font-medium">
-                              {friend.username.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-                        {friend.is_online && (
-                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--background)]"></div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="truncate font-medium">
-                          {friend.username}
-                        </div>
-                        <div className="truncate text-xs text-[var(--muted-foreground)]">
-                          {friend.email}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-4 text-[var(--muted-foreground)]">
-                  No friends found
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <div className="flex-1 overflow-y-auto p-2">{renderTabContent()}</div>
 
         <div className="p-2 border-t border-[var(--border-color)]">
           <div className="flex items-center justify-between">
@@ -363,7 +357,7 @@ export default function ChatSidebar({
                   )}
                 </div>
               </div>
-              <div className="truncate flex-1">{profile?.username}</div>
+              <div className="truncate">{profile?.username}</div>
             </button>
 
             <div className="flex">

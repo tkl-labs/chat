@@ -73,13 +73,13 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center z-50 transition-all duration-300 ease-out
+      className={`fixed inset-0 flex items-center justify-center z-1 transition-all duration-300 ease-out
         ${isAnimating ? 'backdrop-blur-sm bg-black/30' : 'backdrop-blur-none bg-black/0'}`}
       onClick={handleBackdropClick}
     >
       <div
-        className={`bg-white dark:bg-[var(--background)] rounded-lg shadow-xl w-full max-w-md mx-4 
-          transform transition-all duration-300 ease-out
+        className={`bg-white dark:bg-[var(--background)] border border-[var(--border-color)]
+          rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-out
           ${
             isAnimating
               ? 'translate-y-0 opacity-100 scale-100'
@@ -89,17 +89,17 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
       >
         <div className="flex items-center justify-between p-6 border-b dark:border-[var(--border-color)]">
           <div className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-[var(--foreground)]" />
+            <UserPlus className="w-6 h-6 text-[var(--foreground)]" />
             <h2 className="text-lg font-semibold text-[var(--foreground)]">
               Add Friend
             </h2>
           </div>
           <button
             onClick={handleClose}
-            className="p-1 rounded-md dark:hover:bg-[var(--muted-bg)] transition-colors"
+            className="p-2 rounded-md dark:hover:bg-[var(--muted-bg)] transition-colors"
             aria-label="Close dialog"
           >
-            <X className="w-5 h-5 text-[var(--muted-foreground)]" />
+            <X className="w-6 h-6 text-[var(--muted-foreground)]" />
           </button>
         </div>
 
@@ -152,7 +152,6 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
                 </>
               ) : (
                 <>
-                  <UserPlus className="w-4 h-4" />
                   Send Request
                 </>
               )}
