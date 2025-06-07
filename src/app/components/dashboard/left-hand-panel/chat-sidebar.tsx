@@ -173,8 +173,9 @@ export default function ChatSidebar({
       })
 
       console.log(`Friend request ${action}ed:`, response.data)
-      setFriendRequests((prev) => prev.filter((req) => req.id !== requesting_user_id))
-      // Remove the request from the list
+      setFriendRequests((prev) =>
+        prev.filter((req) => req.id !== requesting_user_id),
+      )
 
       // If accepted, refresh friends list
       if (action === 'accept') {
@@ -188,8 +189,7 @@ export default function ChatSidebar({
       showNotification('success', `Friend request ${actionText}`, 'Success')
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
-      const message =
-        error.response?.data?.detail || `Failed to ${action} friend request.`
+      const message = error.response?.data?.detail || `Failed to ${action} friend request.`
       showNotification('error', message, 'Error')
     } finally {
       setProcessingRequests((prev) => {

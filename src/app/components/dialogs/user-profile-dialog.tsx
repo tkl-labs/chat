@@ -31,6 +31,7 @@ interface UserProfileDialogProps {
   onClose: () => void
   user: User
   isFriend: boolean
+  onFriendRemoved?: (friendId: string) => void
 }
 
 export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
@@ -38,6 +39,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   onClose,
   user,
   isFriend,
+  onFriendRemoved,
 }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false)
   const [showRemoveFriend, setshowRemoveFriend] = useState<boolean>(false)
@@ -129,11 +131,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
         username: user.username,
       })
       console.log(response)
-      showNotification(
-        'success',
-        'Friend Request sent successfully!',
-        'Success',
-      )
+      showNotification('success', response?.data?.detail, 'Success')
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
       const message =
@@ -141,15 +139,21 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
       showNotification('error', message, 'Error')
     } finally {
       setLoading(false)
+      setShowConfirmDialog(false)
     }
   }
 
   const removeFriend = async () => {
     setLoading(true)
     try {
-      const response = await api.post('/friend/remove', { removed_friend_id: user.id })
+      const response = await api.post('/friend/remove', {
+        removed_friend_id: user.id,
+      })
       console.log(response)
-      showNotification('success', 'Friend removed successfully!', 'Success')
+      showNotification('success', response?.data?.detail, 'Success')
+      if (onFriendRemoved) {
+        onFriendRemoved(user.id)
+      }
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
       const message = error.response?.data?.detail || 'Failed to remove Friend.'

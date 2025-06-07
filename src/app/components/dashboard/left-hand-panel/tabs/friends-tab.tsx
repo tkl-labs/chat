@@ -16,21 +16,27 @@ interface FriendsTabProps {
   friends: Friend[]
   searchTerm: string
   loading: boolean
+  onFriendRemoved?: (friendId: string) => void
 }
 
 export default function FriendsTab({
   friends,
   searchTerm,
   loading,
+  onFriendRemoved,
 }: FriendsTabProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-  const filteredFriends = friends.filter((friend) =>
+  const [friendsList, setFriends] = useState<Friend[]>(friends)
+  const filteredFriends = friendsList.filter((friend) =>
     friend.username
       .toLocaleLowerCase()
       .includes(searchTerm.toLocaleLowerCase()),
   )
   const [friend, setFriend] = useState<Friend>(filteredFriends[0])
+  
+  const handleFriendRemoved = (friendId: string) => {
+    setFriends((prev) => prev.filter((f) => f.id !== friendId))
+  }
 
   if (loading) {
     return (
@@ -98,6 +104,7 @@ export default function FriendsTab({
         onClose={() => setIsDialogOpen(false)}
         user={friend}
         isFriend={true}
+        onFriendRemoved={handleFriendRemoved}
       />
     </>
   )
