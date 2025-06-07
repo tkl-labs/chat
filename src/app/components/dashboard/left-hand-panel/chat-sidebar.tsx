@@ -22,30 +22,12 @@ import RequestsTab from '@/app/components/dashboard/left-hand-panel/tabs/request
 import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { Friend, FriendRequest } from '@/lib/db-types'
 
 interface ProfilePayload {
   username: string
   email: string
   phone_number: string
-  bio?: string
-  profile_pic?: string
-}
-
-interface Friend {
-  id: string
-  username: string
-  email: string
-  phone_number: string
-  bio?: string
-  profile_pic?: string
-  is_online?: boolean
-}
-
-interface FriendRequest {
-  id: string
-  username: string
-  email: string
-  phone_number?: string
   bio?: string
   profile_pic?: string
 }

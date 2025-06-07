@@ -15,6 +15,8 @@ import { useNotification } from '@/app/components/context/notification-provider'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { ConfirmationDialog } from '@/app/components/dialogs/confirmation-dialog'
+import { FriendRequest } from '@/lib/db-types'
+import Image from 'next/image'
 
 interface User {
   id: string
@@ -32,6 +34,7 @@ interface UserProfileDialogProps {
   user: User
   isFriend: boolean
   onFriendRemoved?: (friendId: string) => void
+  pendingRequests?: FriendRequest[]
 }
 
 export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
@@ -40,6 +43,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   user,
   isFriend,
   onFriendRemoved,
+  pendingRequests = [],
 }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false)
   const [showRemoveFriend, setshowRemoveFriend] = useState<boolean>(false)
@@ -50,6 +54,11 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   const [pendingFriendAction, setPendingFriendAction] = useState<
     null | 'remove'
   >(null)
+
+  // Check if there's a pending friend request for this user
+  const hasPendingRequest = pendingRequests.some(
+    (request) => request.id === user.id,
+  )
 
   useEffect(() => {
     if (isOpen) {
@@ -119,7 +128,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
     if (isFriend) {
       setPendingFriendAction('remove')
       setShowConfirmDialog(true)
-    } else {
+    } else if (!hasPendingRequest) {
       await addFriend()
     }
   }
@@ -234,10 +243,18 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               ) : (
                 <button
                   onClick={handleToggleFriend}
-                  className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[var(--muted-bg)] transition-colors"
-                  disabled={loading}
+                  className={`p-2 rounded-md transition-colors ${
+                    hasPendingRequest
+                      ? 'cursor-not-allowed opacity-50'
+                      : 'hover:bg-gray-100 dark:hover:bg-[var(--muted-bg)]'
+                  }`}
+                  disabled={loading || hasPendingRequest}
                 >
-                  <UserPlus className="w-6 h-6 text-blue-600" />
+                  <UserPlus
+                    className={`w-6 h-6 ${
+                      hasPendingRequest ? 'text-gray-400' : 'text-blue-600'
+                    }`}
+                  />
                 </button>
               )}
 
@@ -328,10 +345,12 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               <div className="text-center">
                 <div className="relative mb-4">
                   {user.profile_pic ? (
-                    <img
+                    <Image
                       src={user.profile_pic}
                       alt={`${user.username}'s profile`}
-                      className="w-32 h-32 rounded-full object-cover border-2 border-[var(--border-color)]"
+                      width={128}
+                      height={128}
+                      className="rounded-full object-cover border-2 border-[var(--border-color)]"
                     />
                   ) : (
                     <div
@@ -353,15 +372,27 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
                 <h3 className="text-lg font-semibold text-[var(--foreground)]">
                   {user.username}
                 </h3>
-                <span
-                  className={`text-sm font-medium ${
-                    user.is_online
-                      ? 'text-green-500'
-                      : 'text-[var(--muted-foreground)]'
-                  }`}
-                >
-                  {user.is_online ? 'Online' : 'Offline'}
-                </span>
+                <div className="flex flex-col items-center gap-1">
+                  <span
+                    className={`text-sm font-medium ${
+                      user.is_online
+                        ? 'text-green-500'
+                        : 'text-[var(--muted-foreground)]'
+                    }`}
+                  >
+                    {user.is_online ? 'Online' : 'Offline'}
+                  </span>
+                  {!isFriend && hasPendingRequest && (
+                    <div className="mt-2">
+                      <span
+                        className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 
+                    px-2 py-1 rounded-full shadow-md shadow-blue-500/50"
+                      >
+                        Friend Request Pending
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

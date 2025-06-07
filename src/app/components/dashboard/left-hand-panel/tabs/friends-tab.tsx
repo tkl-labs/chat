@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
 
 interface Friend {
@@ -23,10 +23,14 @@ export default function FriendsTab({
   friends,
   searchTerm,
   loading,
-  onFriendRemoved,
 }: FriendsTabProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [friendsList, setFriends] = useState<Friend[]>(friends)
+
+  useEffect(() => {
+    setFriends(friends)
+  }, [friends])
+
   const filteredFriends = friendsList.filter((friend) =>
     friend.username
       .toLocaleLowerCase()
@@ -85,7 +89,7 @@ export default function FriendsTab({
                   />
                 ) : (
                   <span className="text-white text-sm font-medium">
-                    {friend.username.charAt(0)}
+                    {friend.username.charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>
