@@ -36,3 +36,22 @@ export type Message = {
   is_deleted: boolean
   is_read: boolean
 }
+
+export type Friend = {
+  id: string
+  username: string
+  email: string
+  phone_number: string
+  bio?: string
+  profile_pic?: string
+  is_online?: boolean
+}
+
+export type FriendRequest = {
+  id: string
+  username: string
+  email: string
+  phone_number: string
+  bio?: string
+  profile_pic?: string
+}

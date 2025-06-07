@@ -16,7 +16,7 @@ const api = axios.create({
 // Fetch CSRF token from server
 const fetchCsrfToken = async (): Promise<string | null> => {
   try {
-    const response = await api.get('/api/csrf')
+    const response = await api.get('/auth/csrf')
     csrfToken = response.data.csrf_token
     return csrfToken
   } catch (err) {
@@ -47,19 +47,27 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
-    if (error.response?.status === 403 && !originalRequest._retry) {
+
+    const detail = error.response?.data?.detail
+    const isTokenIssue =
+      error.response?.status === 401 &&
+      (detail === 'access token expired' || detail === 'missing jwt token')
+
+    if (isTokenIssue && !originalRequest._retry) {
       originalRequest._retry = true
       try {
         await api.post('/auth/refresh', {}, { withCredentials: true })
         console.log('Token refreshed successfully')
-        return axios(originalRequest)
+        return api(originalRequest)
       } catch (refreshError) {
-        window.location.href = '/login' // Redirect to login page
         console.error('Failed to refresh token', refreshError)
+        window.location.href = '/login'
         return Promise.reject(refreshError)
       }
     }
+
     return Promise.reject(error)
-  },
+  }
 )
+
 export default api

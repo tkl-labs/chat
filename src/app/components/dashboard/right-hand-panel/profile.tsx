@@ -6,7 +6,8 @@ import { UserIcon, Camera, Upload, ZoomIn, ZoomOut, Move } from 'lucide-react'
 import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
-import { useNotification } from '../components/notification-provider'
+import { useNotification } from '@/app/components/context/notification-provider'
+import { Button } from '@/app/components/ui/buttons'
 
 interface ProfileUpdatePayload {
   username?: string
@@ -53,12 +54,18 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [touchedFields, setTouchedFields] = useState({
+    username: false,
+    email: false,
+    phone_number: false,
+    bio: false,
+  })
 
   useEffect(() => {
     // Featch user profile on mount
     const fetchUserProfile = async () => {
       try {
-        const response = await api.get('/api/profile')
+        const response = await api.get('/profile/self')
         console.log(response.data)
         setProfile(response.data)
         setFormData(response.data)
@@ -77,6 +84,7 @@ export default function ProfilePage() {
   ) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setTouchedFields((prev) => ({ ...prev, [name]: true }))
   }
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -367,6 +375,23 @@ export default function ProfilePage() {
     })
   }
 
+  // Validations
+  const isValidUsername = (username: string) => {
+    return /^[a-zA-Z0-9]{8,16}$/.test(username)
+  }
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  }
+
+  const isValidPhoneNumber = (phone: string) => {
+    return /^\+?[0-9]{7,15}$/.test(phone)
+  }
+
+  const isValidBio = (bio: string) => {
+    return bio.length <= 500
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -405,7 +430,7 @@ export default function ProfilePage() {
         return
       }
 
-      const response = await api.patch('/api/profile', payload)
+      const response = await api.patch('/profile/self', payload)
       console.log(response)
 
       const updatedProfile = {
@@ -456,8 +481,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full flex flex-col items-center justify-center p-4">
-      <div className="bg-[var(--background)] border border-[var(--border-color)] rounded-lg p-10 sm:p-6 shadow-sm relative">
+    <div
+      className={`${
+        isEditing
+          ? 'isEditing'
+          : 'contents sm:flex h-full flex-col items-center justify-center'
+      } h-full flex flex-col items-center justify-center p-6`}
+    >
+      <div
+        className={`bg-[var(--background)] min-w-full sm:min-w-1/2 border border-[var(--border-color)] sm:rounded-lg p-10 sm:p-6 shadow-sm relative ${
+          isEditing
+            ? 'isEditing'
+            : 'bg-[var(--background)] border border-[var(--border-color)] rounded-lg p-10 sm:p-6 shadow-sm relative'
+        }`}
+      >
         {showCropper && imagePreview && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div className="bg-[var(--background)] border border-[var(--border-color)] rounded-lg p-6 max-w-md w-full">
@@ -526,27 +563,14 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="flex justify-center gap-2 pt-4">
-                  <button
-                    type="button"
-                    onClick={handleCloseCropper}
-                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-medium transition-colors 
-                       border border-[var(--border-color)] rounded-md cursor-pointer
-                        hover:bg-[var(--hover-light)] dark:hover:bg-[var(--hover-dark-mode)] 
-                        hover:border-transparent`}
-                  >
+                  <Button variant="outline" onClick={handleCloseCropper}>
                     Cancel
-                  </button>
+                  </Button>
 
-                  <button
-                    type="button"
-                    onClick={handleImageCrop}
-                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md font-medium transition-colors 
-                              bg-[var(--foreground)] cursor-pointer
-                              text-[var(--background)] hover:opacity-90`}
-                  >
+                  <Button onClick={handleImageCrop}>
                     <Upload className="w-4 h-4" />
                     Apply
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -604,9 +628,8 @@ export default function ProfilePage() {
           <div className="flex-1 text-center sm:text-left">
             <h2 className="text-xl font-semibold">{profile.username}</h2>
             <p className="text-[var(--muted-foreground)] mb-4">
-              {profile.email}
+              {profile.bio || 'No bio provided'}
             </p>
-            <p className="text-sm">{profile.bio || 'No bio provided'}</p>
           </div>
           {!isEditing && (
             <button
@@ -624,7 +647,7 @@ export default function ProfilePage() {
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium mb-1"
+                  className="flex items-center gap-2 font-medium text-[var(--foreground)]"
                 >
                   Username
                 </label>
@@ -633,16 +656,27 @@ export default function ProfilePage() {
                   name="username"
                   type="text"
                   value={formData.username}
+                  maxLength={16}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-[var(--border-color)] rounded-md
-                                focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 
+                    transition-colors text-[var(--foreground)] ${
+                      touchedFields.username &&
+                      isValidUsername(formData.username || '')
+                        ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                        : touchedFields.username
+                          ? 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
+                          : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
+                    }`}
                 />
+                <p className="mt-1 text-xs text-[var(--border-color)]">
+                  {formData.username?.length}/16 characters
+                </p>
               </div>
 
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium mb-1"
+                  className="flex items-center gap-2 font-medium text-[var(--foreground)]"
                 >
                   Email
                 </label>
@@ -652,15 +686,24 @@ export default function ProfilePage() {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-[var(--border-color)] rounded-md
-                                focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 
+                    transition-colors text-[var(--foreground)] ${
+                      touchedFields.email && isValidEmail(formData.email || '')
+                        ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                        : touchedFields.email
+                          ? 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
+                          : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
+                    }`}
                 />
+                <p className="mt-1 text-xs text-[var(--border-color)]">
+                  Valid email format
+                </p>
               </div>
 
               <div>
                 <label
                   htmlFor="phone_number"
-                  className="block text-sm font-medium mb-1"
+                  className="flex items-center gap-2 font-medium text-[var(--foreground)]"
                 >
                   Phone Number
                 </label>
@@ -669,27 +712,51 @@ export default function ProfilePage() {
                   name="phone_number"
                   type="tel"
                   value={formData.phone_number}
+                  maxLength={16}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-[var(--border-color)] rounded-md
-                                focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]"
+                  placeholder="+1234567890"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 
+                    transition-colors text-[var(--foreground)] ${
+                      touchedFields.phone_number &&
+                      isValidPhoneNumber(formData.phone_number || '')
+                        ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                        : touchedFields.phone_number
+                          ? 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
+                          : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
+                    }`}
                 />
+                <p className="mt-1 text-xs text-[var(--border-color)]">
+                  Include country code (+ Prefix, 7-15 digits)
+                </p>
               </div>
 
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="bio"
+                  className="flex items-center gap-2 font-medium text-[var(--foreground)]"
+                >
                   Bio
                 </label>
                 <textarea
                   id="bio"
                   name="bio"
-                  value={formData.bio || ''}
+                  value={formData.bio}
+                  maxLength={500}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-[var(--border-color)] rounded-md
-                                focus:outline-none focus:ring-1 focus:ring-[var(--foreground)]"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 
+                    transition-colors resize-none text-[var(--foreground)] ${
+                      touchedFields.bio && isValidBio(formData.bio || '')
+                        ? 'border-[var(--success-border-color)] focus:ring-[var(--success-border-color)]'
+                        : touchedFields.bio
+                          ? 'border-[var(--error-border-color)] focus:ring-[var(--error-border-color)]'
+                          : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
+                    }`}
                 />
+                <p className="mt-1 text-xs text-[var(--border-color)]">
+                  {formData.bio?.length}/500 characters
+                </p>
               </div>
-
               <div className="flex justify-end gap-2 pt-4">
                 <button
                   type="button"
