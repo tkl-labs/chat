@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
 
 interface Friend {
+  id: string
   username: string
   email: string
   phone_number: string
