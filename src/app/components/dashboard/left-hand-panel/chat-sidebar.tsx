@@ -42,13 +42,12 @@ interface Friend {
 }
 
 interface FriendRequest {
-  requesting_user_id: string
+  id: string
   username: string
   email: string
   phone_number?: string
   bio?: string
   profile_pic?: string
-  sent_at: string
 }
 
 type TabType = 'chats' | 'friends' | 'requests'
@@ -145,15 +144,11 @@ export default function ChatSidebar({
     try {
       const response = await api.get('/friend/requests')
 
-      // Backend returns requests with "from_user_id", normalise to "requesting_user_id"
-      // Backend returns requests with "from_username", normalise to "username"
-      const normalisedRequests = response.data.map((req: any) => ({
-        ...req,
-        requesting_user_id: req.from_user_id,
-        username: req.from_username,
-      }))
-      setFriendRequests(normalisedRequests)
-      console.log('Friend requests fetched:', normalisedRequests)
+      // Parse the JSON string into a real array
+      const parsedData = JSON.parse(response.data)
+
+      setFriendRequests(parsedData)
+      console.log('Friend requests fetched:', parsedData)
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
       const message =
@@ -178,12 +173,12 @@ export default function ChatSidebar({
       })
 
       console.log(`Friend request ${action}ed:`, response.data)
-      setFriendRequests((prev) => prev.filter((req) => req.requesting_user_id !== requesting_user_id))
+      setFriendRequests((prev) => prev.filter((req) => req.id !== requesting_user_id))
       // Remove the request from the list
 
       // If accepted, refresh friends list
       if (action === 'accept') {
-        setFriends([]) // Clear to force refetch
+        setFriends([])
         if (activeTab === 'friends') {
           fetchFriends()
         }

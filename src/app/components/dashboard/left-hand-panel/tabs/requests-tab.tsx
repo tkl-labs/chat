@@ -2,7 +2,7 @@ import { Check, X, Clock } from 'lucide-react'
 import Image from 'next/image'
 
 interface FriendRequest {
-  requesting_user_id: string
+  id: string
   username: string
   email?: string
   phone_number?: string
@@ -54,7 +54,7 @@ export default function RequestsTab({
       </div>
       {filteredRequests.map((request) => (
         <div
-          key={request.requesting_user_id}
+          key={request.id}
           className="flex items-center gap-2 px-2 py-2 rounded-md bg-[var(--hover-light)]
             dark:bg-[var(--hover-dark-mode)]"
         >
@@ -88,8 +88,8 @@ export default function RequestsTab({
           </div>
           <div className="flex gap-1">
             <button
-              onClick={() => onRequestAction(request.requesting_user_id, 'accept')}
-              disabled={processingRequests.has(request.requesting_user_id)}
+              onClick={() => onRequestAction(request.id, 'accept')}
+              disabled={processingRequests.has(request.id)}
               className="p-1.5 rounded-md bg-green-500 hover:bg-green-600 text-white transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Accept request"
@@ -97,8 +97,8 @@ export default function RequestsTab({
               <Check className="w-3 h-3" />
             </button>
             <button
-              onClick={() => onRequestAction(request.requesting_user_id, 'reject')}
-              disabled={processingRequests.has(request.requesting_user_id)}
+              onClick={() => onRequestAction(request.id, 'reject')}
+              disabled={processingRequests.has(request.id)}
               className="p-1.5 rounded-md bg-red-500 hover:bg-red-600 text-white transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reject request"
