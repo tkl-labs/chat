@@ -13,8 +13,14 @@
   --hover-dark: #383838;
   --hover-dark-mode: #1a1a1a;
   --hover-light-mode: #ccc;
+  
   --error-border-color: #ef4444;
+  --error-color: #EF4444;
+  --error-hover-color: #f87171;
+  
   --success-border-color: #22c55e;
+  --success-color: #22C55E;
+  --success-hover-color: #4ade80;
 }
 
 @theme inline {
@@ -31,8 +37,14 @@
     --muted-bg: rgba(255, 255, 255, 0.06);
     --muted-foreground: #a3a3a3;
     --border-color: rgba(255, 255, 255, 0.145);
+    
     --error-border-color: #f87171;
+    --error-color: #EF4444;
+    --error-hover-color: #DC2626;
+    
     --success-border-color: #4ade80;
+    --success-color: #22C55E;
+    --success-hover-color: #16A34A;
   }
 }
 

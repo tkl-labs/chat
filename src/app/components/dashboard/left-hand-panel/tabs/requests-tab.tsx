@@ -90,7 +90,7 @@ export default function RequestsTab({
             <button
               onClick={() => onRequestAction(request.id, 'accept')}
               disabled={processingRequests.has(request.id)}
-              className="p-1.5 rounded-md bg-green-500 hover:bg-green-600 text-white transition-colors
+              className="p-1.5 rounded-md bg-[var(--success-color)] hover:bg-[var(--success-hover-color)] text-white transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Accept request"
             >
@@ -99,7 +99,7 @@ export default function RequestsTab({
             <button
               onClick={() => onRequestAction(request.id, 'reject')}
               disabled={processingRequests.has(request.id)}
-              className="p-1.5 rounded-md bg-red-500 hover:bg-red-600 text-white transition-colors
+              className="p-1.5 rounded-md bg-[var(--error-color)] hover:bg-[var(--error-hover-color)] text-white transition-colors
                 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reject request"
             >

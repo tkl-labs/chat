@@ -83,7 +83,7 @@ export default function FriendsTab({
                 )}
               </div>
               {friend.is_online && (
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--background)]"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[var(--success-color)] rounded-full border-2 border-[var(--background)]"></div>
               )}
             </div>
             <div className="flex-1 min-w-0">

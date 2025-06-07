@@ -289,7 +289,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
                   <div className="border-t dark:border-[var(--border-color)] my-1"></div>
                   <button
                     onClick={(e) => handleMenuAction('block', e)}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 
+                    className="w-full px-4 py-2 text-left text-sm text-[var(--error-hover-color)] 
                                hover:bg-red-50 dark:hover:bg-red-900/20 
                                flex items-center gap-2 transition-colors"
                   >
@@ -298,7 +298,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
                   </button>
                   <button
                     onClick={(e) => handleMenuAction('report', e)}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 
+                    className="w-full px-4 py-2 text-left text-sm text-[var(--error-hover-color)] 
                                hover:bg-red-50 dark:hover:bg-red-900/20 
                                flex items-center gap-2 transition-colors"
                   >
@@ -341,7 +341,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
 
                   {user.is_online && (
                     <div
-                      className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 
+                      className="absolute bottom-0 right-0 w-6 h-6 bg-[var(--success-color)] 
                           rounded-full border-2 border-white dark:border-[var(--background)]"
                     ></div>
                   )}
