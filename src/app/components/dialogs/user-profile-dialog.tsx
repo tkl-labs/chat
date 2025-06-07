@@ -17,6 +17,7 @@ import { AxiosError } from 'axios'
 import { ConfirmationDialog } from '@/app/components/dialogs/confirmation-dialog'
 
 interface User {
+  id: string
   username: string
   email: string
   phone_number: string
@@ -147,7 +148,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
     setLoading(true)
     try {
       const response = await api.post('/friend/remove', {
-        username: user.username,
+        removed_friend_id: user.id,
       })
       console.log(response)
       showNotification('success', 'Friend removed successfully!', 'Success')

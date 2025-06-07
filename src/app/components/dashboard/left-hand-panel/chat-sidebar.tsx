@@ -22,7 +22,6 @@ import RequestsTab from '@/app/components/dashboard/left-hand-panel/tabs/request
 import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
-import { request } from 'http'
 
 interface ProfilePayload {
   username: string
@@ -33,6 +32,7 @@ interface ProfilePayload {
 }
 
 interface Friend {
+  id: string
   username: string
   email: string
   phone_number: string
