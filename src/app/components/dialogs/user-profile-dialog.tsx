@@ -147,9 +147,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   const removeFriend = async () => {
     setLoading(true)
     try {
-      const response = await api.post('/friend/remove', {
-        removed_friend_id: user.id,
-      })
+      const response = await api.post('/friend/remove', { removed_friend_id: user.id })
       console.log(response)
       showNotification('success', 'Friend removed successfully!', 'Success')
     } catch (err) {
