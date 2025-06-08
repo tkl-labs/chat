@@ -119,6 +119,10 @@ export default function ChatSidebar({
     }
   }
 
+  const handleFriendRemoved = (friendId: string) => {
+    setFriends((prev) => prev.filter((f) => f.id !== friendId))
+  }
+
   const fetchFriendRequests = async () => {
     if (friendRequests.length > 0) return // Don't fetch if already loaded
 
@@ -216,6 +220,7 @@ export default function ChatSidebar({
             friends={friends}
             searchTerm={searchTerm}
             loading={friendsLoading}
+            onFriendRemoved={handleFriendRemoved}
           />
         )
       case 'requests':
