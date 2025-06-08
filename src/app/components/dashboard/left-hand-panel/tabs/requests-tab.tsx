@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
 import { FriendRequest } from '@/lib/db-types'
+import { RequestsListSkeleton } from '@/app/components/ui/skeletons'
 
 interface RequestsTabProps {
   requests: FriendRequest[]
@@ -33,9 +34,7 @@ export default function RequestsTab({
 
   if (loading) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        Loading requests...
-      </div>
+      <RequestsListSkeleton />
     )
   }
 

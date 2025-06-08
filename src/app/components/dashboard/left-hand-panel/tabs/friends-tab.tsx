@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
-import { FriendListSkeleton } from '@/app/components/skeletons'
+import { FriendListSkeleton } from '@/app/components/ui/skeletons'
 
 interface Friend {
   id: string
