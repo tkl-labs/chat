@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
+import { FriendListSkeleton } from '@/app/components/skeletons'
 
 interface Friend {
   id: string
@@ -44,9 +45,7 @@ export default function FriendsTab({
 
   if (loading) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        Loading friends...
-      </div>
+      <FriendListSkeleton />
     )
   }
 
