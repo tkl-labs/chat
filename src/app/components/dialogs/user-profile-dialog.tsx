@@ -51,9 +51,6 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const { showNotification } = useNotification()
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-  const [pendingFriendAction, setPendingFriendAction] = useState<
-    null | 'remove'
-  >(null)
 
   // Check if there's a pending friend request for this user
   const hasPendingRequest = pendingRequests.some(
@@ -126,7 +123,6 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
     setshowRemoveFriend(false)
 
     if (isFriend) {
-      setPendingFriendAction('remove')
       setShowConfirmDialog(true)
     } else if (!hasPendingRequest) {
       await addFriend()

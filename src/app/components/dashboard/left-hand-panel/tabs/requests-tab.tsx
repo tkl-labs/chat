@@ -33,9 +33,7 @@ export default function RequestsTab({
   )
 
   if (loading) {
-    return (
-      <RequestsListSkeleton />
-    )
+    return <RequestsListSkeleton />
   }
 
   if (filteredRequests.length === 0) {

@@ -44,10 +44,15 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
     try {
       const response = await api.post('/friend/add', { username })
       console.log(response)
-      showNotification('success', 'Friend Request sent successfully!', 'Success')
+      showNotification(
+        'success',
+        'Friend Request sent successfully!',
+        'Success',
+      )
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
-      const message = error.response?.data?.detail || 'Failed to send Friend Request.'
+      const message =
+        error.response?.data?.detail || 'Failed to send Friend Request.'
       showNotification('error', message, 'Error')
     } finally {
       setLoading(false)
@@ -151,9 +156,7 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({
                   Sending...
                 </>
               ) : (
-                <>
-                  Send Request
-                </>
+                <>Send Request</>
               )}
             </Button>
           </div>

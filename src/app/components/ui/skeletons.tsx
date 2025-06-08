@@ -123,6 +123,5 @@ export function RequestsListSkeleton() {
         </div>
       ))}
     </div>
-  );
+  )
 }
-

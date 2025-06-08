@@ -38,15 +38,13 @@ export default function FriendsTab({
       .includes(searchTerm.toLocaleLowerCase()),
   )
   const [friend, setFriend] = useState<Friend>(filteredFriends[0])
-  
+
   const handleFriendRemoved = (friendId: string) => {
     setFriends((prev) => prev.filter((f) => f.id !== friendId))
   }
 
   if (loading) {
-    return (
-      <FriendListSkeleton />
-    )
+    return <FriendListSkeleton />
   }
 
   if (filteredFriends.length === 0) {

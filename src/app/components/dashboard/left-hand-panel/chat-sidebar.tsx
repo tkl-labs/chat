@@ -54,7 +54,7 @@ export default function ChatSidebar({
   const [processingRequests, setProcessingRequests] = useState<Set<string>>(
     new Set(),
   )
-  
+
   useEffect(() => {
     // Fetch user profile on mount
     const fetchUserProfile = async () => {
@@ -171,7 +171,8 @@ export default function ChatSidebar({
       showNotification('success', `Friend request ${actionText}`, 'Success')
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
-      const message = error.response?.data?.detail || `Failed to ${action} friend request.`
+      const message =
+        error.response?.data?.detail || `Failed to ${action} friend request.`
       showNotification('error', message, 'Error')
     } finally {
       setProcessingRequests((prev) => {
