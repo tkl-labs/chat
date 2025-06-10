@@ -714,7 +714,7 @@ export default function ProfilePage() {
                   value={formData.phone_number}
                   maxLength={16}
                   onChange={handleChange}
-                  placeholder="+1234567890"
+                  placeholder="+447123456789"
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 
                     transition-colors text-[var(--foreground)] ${
                       touchedFields.phone_number &&

@@ -4,7 +4,7 @@ const mockUser: User = {
   id: '123e4567-e89b-12d3-a456-426614174000',
   username: 'Koushic Sumathi Kumar',
   email: 'koushic@koushic.com',
-  phone_number: '+1234567890',
+  phone_number: '+447123456789',
   two_factor_auth: true,
   password_hash: '$2b$12$eW5FgH6V7Yx2B3ZfjnhlXOe5LnV.CdYFbZm/jaMWB8O0E/cQuH2ba',
   profile_pic: '',
@@ -26,7 +26,7 @@ export const createMockUsers = async (): Promise<User[]> => {
       id: 'user-1',
       username: 'Koushic Sumathi Kumar',
       email: 'koushic@koushic.com',
-      phone_number: '+1234567890',
+      phone_number: '+447123456789',
       two_factor_auth: true,
       password_hash:
         '$2b$12$eW5FgH6V7Yx2B3ZfjnhlXOe5LnV.CdYFbZm/jaMWB8O0E/cQuH2ba',
@@ -38,7 +38,7 @@ export const createMockUsers = async (): Promise<User[]> => {
       id: 'user-2',
       username: 'Lewis Rye',
       email: 'lewis@lewis.com',
-      phone_number: '+1234567890',
+      phone_number: '+447123456789',
       two_factor_auth: true,
       password_hash:
         '$2b$12$eW5FgH6V7Yx2B3ZfjnhlXOe5LnV.CdYFbZm/jaMWB8O0E/cQuH2ba',
@@ -50,7 +50,7 @@ export const createMockUsers = async (): Promise<User[]> => {
       id: 'user-3',
       username: 'Taisei Yokoshima',
       email: 'taisei@taisei.com',
-      phone_number: '+1234567890',
+      phone_number: '+447123456789',
       two_factor_auth: true,
       password_hash:
         '$2b$12$eW5FgH6V7Yx2B3ZfjnhlXOe5LnV.CdYFbZm/jaMWB8O0E/cQuH2ba',

@@ -374,7 +374,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}
-                      placeholder="+1234567890"
+                      placeholder="+447123456789"
                       required
                     />
                   </div>
