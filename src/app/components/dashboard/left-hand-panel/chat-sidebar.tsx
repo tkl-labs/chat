@@ -23,6 +23,7 @@ import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { Friend, FriendRequest } from '@/lib/db-types'
+import { SettingsDialog } from '@/app/components/dialogs/settings-dialog'
 
 interface ProfilePayload {
   username: string
@@ -50,6 +51,7 @@ export default function ChatSidebar({
   const [requestsLoading, setRequestsLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddFriendOpen, setIsAddFriendOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chats')
   const [processingRequests, setProcessingRequests] = useState<Set<string>>(
     new Set(),
@@ -344,13 +346,13 @@ export default function ChatSidebar({
             </button>
 
             <div className="flex">
-              <Link
-                href="/settings"
+              <button
+                onClick={() => setIsSettingsOpen(true)}
                 className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
               >
                 <Settings className="w-6 h-6" />
-              </Link>
+              </button>
 
               <button
                 onClick={handleLogOut}
@@ -366,6 +368,10 @@ export default function ChatSidebar({
       <AddFriendDialog
         isOpen={isAddFriendOpen}
         onClose={() => setIsAddFriendOpen(false)}
+      />
+      <SettingsDialog
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
       />
     </>
   )
