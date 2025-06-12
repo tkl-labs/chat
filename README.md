@@ -1,4 +1,4 @@
-# 🗨️ TKL Chat — A Cross-Platform Chat Room
+# TKL Chat — A Cross-Platform Chat Room
 
 **TKL Chat** is a modern, cross-platform chat room application built with a Rust backend and TypeScript frontend. It supports real-time messaging via WebSockets and is containerised using Docker for easy setup.
 
