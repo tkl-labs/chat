@@ -11,7 +11,6 @@ import {
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import ChatSidebarSkeleton from '@/app/components/ui/skeletons'
 import { getMockData } from '@/lib/mock-data'
 import { useNotification } from '@/app/components/context/notification-provider'
