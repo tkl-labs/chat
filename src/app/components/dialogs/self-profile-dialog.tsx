@@ -622,7 +622,7 @@ export const SelfProfileDialog: React.FC<ProfileDialogProps> = ({
           <div className="flex items-center gap-2">
             <User className="w-6 h-6 text-[var(--foreground)]" />
             <h2 className="text-lg font-semibold text-[var(--foreground)]">
-              {isEditing ? 'Edit Profile' : 'Profile'}
+              {isEditing ? 'Edit Profile' : 'Your Profile'}
             </h2>
           </div>
           <button
