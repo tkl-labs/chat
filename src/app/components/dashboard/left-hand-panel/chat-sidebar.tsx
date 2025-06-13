@@ -23,6 +23,7 @@ import api from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { Friend, FriendRequest } from '@/lib/db-types'
 import { SettingsDialog } from '@/app/components/dialogs/settings-dialog'
+import { SelfProfileDialog} from '@/app/components/dialogs/self-profile-dialog'
 
 interface ProfilePayload {
   username: string
@@ -51,6 +52,7 @@ export default function ChatSidebar({
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddFriendOpen, setIsAddFriendOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chats')
   const [processingRequests, setProcessingRequests] = useState<Set<string>>(
     new Set(),
@@ -322,7 +324,7 @@ export default function ChatSidebar({
         <div className="p-2 border-t border-[var(--border-color)]">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => onSelect('profile')}
+              onClick={() => setIsProfileOpen(true)}
               className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
             >
@@ -371,6 +373,10 @@ export default function ChatSidebar({
       <SettingsDialog
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+      <SelfProfileDialog
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
     </>
   )

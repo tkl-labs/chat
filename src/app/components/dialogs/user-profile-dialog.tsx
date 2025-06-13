@@ -10,7 +10,7 @@ import {
   Ban,
   Flag,
 } from 'lucide-react'
-import { Button } from '../ui/buttons'
+import { Button } from '@/app/components/ui/buttons'
 import { useNotification } from '@/app/components/context/notification-provider'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
