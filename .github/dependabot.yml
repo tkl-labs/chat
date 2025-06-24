@@ -26,3 +26,12 @@ updates:
     commit-message:
       prefix: 'chore'
       include: 'scope' # Adds the package name to the commit scope
+
+groups:
+  # group PRs together
+  npm-dependencies:
+    patterns:
+      - "*"
+  cargo-dependencies:
+    patterns:
+      - "*"
