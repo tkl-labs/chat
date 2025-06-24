@@ -1,6 +1,8 @@
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
+import { FriendListSkeleton } from '@/app/components/ui/skeletons'
+import { UserRoundX } from 'lucide-react'
 
 interface Friend {
   id: string
@@ -23,6 +25,7 @@ export default function FriendsTab({
   friends,
   searchTerm,
   loading,
+  onFriendRemoved,
 }: FriendsTabProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [friendsList, setFriends] = useState<Friend[]>(friends)
@@ -31,29 +34,57 @@ export default function FriendsTab({
     setFriends(friends)
   }, [friends])
 
-  const filteredFriends = friendsList.filter((friend) =>
-    friend.username
-      .toLocaleLowerCase()
-      .includes(searchTerm.toLocaleLowerCase()),
+  const filteredFriends = useMemo(
+    () =>
+      friendsList.filter((friend) =>
+        friend.username
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLocaleLowerCase()),
+      ),
+    [friendsList, searchTerm],
   )
   const [friend, setFriend] = useState<Friend>(filteredFriends[0])
-  
+
   const handleFriendRemoved = (friendId: string) => {
-    setFriends((prev) => prev.filter((f) => f.id !== friendId))
+    if (onFriendRemoved) {
+      onFriendRemoved(friendId)
+    }
   }
 
   if (loading) {
+    return <FriendListSkeleton />
+  }
+
+  if (friends.length === 0) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        Loading friends...
+      <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[var(--card-background)] rounded-md">
+        <div className="p-3 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] mb-4">
+          <UserRoundX className="w-6 h-6" />
+        </div>
+        <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1">
+          No Friends Found
+        </h3>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-xs">
+          Looks like you haven't added any friends yet. You can search for users
+          and send them a friend request.
+        </p>
       </div>
     )
   }
 
   if (filteredFriends.length === 0) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        No friends found
+      <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[var(--card-background)] rounded-md">
+        <div className="p-3 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] mb-4">
+          <UserRoundX className="w-6 h-6" />
+        </div>
+        <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1">
+          No Matching Friends
+        </h3>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-xs">
+          We couldn't find any friends matching your search. Try adjusting your
+          search term or check your spelling.
+        </p>
       </div>
     )
   }

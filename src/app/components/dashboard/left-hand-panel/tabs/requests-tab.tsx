@@ -1,8 +1,9 @@
-import { Check, X } from 'lucide-react'
+import { Check, X, MailX } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { UserProfileDialog } from '@/app/components/dialogs/user-profile-dialog'
 import { FriendRequest } from '@/lib/db-types'
+import { RequestsListSkeleton } from '@/app/components/ui/skeletons'
 
 interface RequestsTabProps {
   requests: FriendRequest[]
@@ -25,24 +26,50 @@ export default function RequestsTab({
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [user, setUser] = useState<FriendRequest | null>(null)
 
-  const filteredRequests = requests.filter((request) =>
-    request.username
-      .toLocaleLowerCase()
-      .includes(searchTerm.toLocaleLowerCase()),
+  const filteredRequests = useMemo(
+    () =>
+      requests.filter((request) =>
+        request.username
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLocaleLowerCase()),
+      ),
+    [requests, searchTerm],
   )
 
   if (loading) {
+    return <RequestsListSkeleton />
+  }
+
+  if (requests.length === 0) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        Loading requests...
+      <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[var(--card-background)] rounded-md">
+        <div className="p-3 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] mb-4">
+          <MailX className="w-6 h-6" />
+        </div>
+        <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1">
+          No Friend Requests
+        </h3>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-xs">
+          You don’t have any pending friend requests right now. When someone
+          sends you a request, it’ll show up here.
+        </p>
       </div>
     )
   }
 
   if (filteredRequests.length === 0) {
     return (
-      <div className="text-center py-4 text-[var(--muted-foreground)]">
-        No friend requests
+      <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-[var(--card-background)] rounded-md">
+        <div className="p-3 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] mb-4">
+          <MailX className="w-6 h-6" />
+        </div>
+        <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1">
+          No Matching Requests
+        </h3>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-xs">
+          No friend requests match your search. Try adjusting your search term
+          or check your spelling.
+        </p>
       </div>
     )
   }

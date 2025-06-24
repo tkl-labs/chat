@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Mail,
   MessageCircle,
@@ -16,11 +16,14 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { useSearchParams } from 'next/navigation'
+
 
 type FormMode = 'login' | 'register'
 
 export default function AuthForm({ mode }: { mode: FormMode }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { showNotification } = useNotification()
   const [formData, setFormData] = useState({
     username: '',
@@ -37,6 +40,12 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
     email: false,
     phone_number: false,
   })
+
+  useEffect(() => {
+    if (searchParams.get('unauthorized') === 'true') {
+      showNotification('error', 'Please login to access that page.', 'Unauthorized')
+    }
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -374,7 +383,7 @@ export default function AuthForm({ mode }: { mode: FormMode }) {
                             : 'border-[var(--border-color)] focus:ring-[var(--foreground)]'
                         }
                       `}
-                      placeholder="+1234567890"
+                      placeholder="+447123456789"
                       required
                     />
                   </div>

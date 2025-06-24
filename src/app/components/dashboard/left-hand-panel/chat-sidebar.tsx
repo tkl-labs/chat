@@ -11,8 +11,7 @@ import {
 } from 'lucide-react'
 import { Group } from '@/lib/db-types'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import ChatSidebarSkeleton from '@/app/components/skeletons'
+import ChatSidebarSkeleton from '@/app/components/ui/skeletons'
 import { getMockData } from '@/lib/mock-data'
 import { useNotification } from '@/app/components/context/notification-provider'
 import { AddFriendDialog } from '@/app/components/dialogs/add-friend-dialog'
@@ -23,6 +22,8 @@ import Image from 'next/image'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { Friend, FriendRequest } from '@/lib/db-types'
+import { SettingsDialog } from '@/app/components/dialogs/settings-dialog'
+import { SelfProfileDialog} from '@/app/components/dialogs/self-profile-dialog'
 
 interface ProfilePayload {
   username: string
@@ -50,6 +51,8 @@ export default function ChatSidebar({
   const [requestsLoading, setRequestsLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddFriendOpen, setIsAddFriendOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('chats')
   const [processingRequests, setProcessingRequests] = useState<Set<string>>(
     new Set(),
@@ -119,6 +122,10 @@ export default function ChatSidebar({
     }
   }
 
+  const handleFriendRemoved = (friendId: string) => {
+    setFriends((prev) => prev.filter((f) => f.id !== friendId))
+  }
+
   const fetchFriendRequests = async () => {
     if (friendRequests.length > 0) return // Don't fetch if already loaded
 
@@ -171,7 +178,8 @@ export default function ChatSidebar({
       showNotification('success', `Friend request ${actionText}`, 'Success')
     } catch (err) {
       const error = err as AxiosError<{ detail?: string }>
-      const message = error.response?.data?.detail || `Failed to ${action} friend request.`
+      const message =
+        error.response?.data?.detail || `Failed to ${action} friend request.`
       showNotification('error', message, 'Error')
     } finally {
       setProcessingRequests((prev) => {
@@ -215,6 +223,7 @@ export default function ChatSidebar({
             friends={friends}
             searchTerm={searchTerm}
             loading={friendsLoading}
+            onFriendRemoved={handleFriendRemoved}
           />
         )
       case 'requests':
@@ -315,7 +324,7 @@ export default function ChatSidebar({
         <div className="p-2 border-t border-[var(--border-color)]">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => onSelect('profile')}
+              onClick={() => setIsProfileOpen(true)}
               className="flex flex-1 min-w-0 items-center gap-2 px-2 py-2 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
             >
@@ -338,13 +347,13 @@ export default function ChatSidebar({
             </button>
 
             <div className="flex">
-              <Link
-                href="/settings"
+              <button
+                onClick={() => setIsSettingsOpen(true)}
                 className="p-3 rounded-md hover:bg-[var(--hover-light)]
              dark:hover:bg-[var(--hover-dark-mode)] transition-colors"
               >
                 <Settings className="w-6 h-6" />
-              </Link>
+              </button>
 
               <button
                 onClick={handleLogOut}
@@ -360,6 +369,14 @@ export default function ChatSidebar({
       <AddFriendDialog
         isOpen={isAddFriendOpen}
         onClose={() => setIsAddFriendOpen(false)}
+      />
+      <SettingsDialog
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
+      <SelfProfileDialog
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
     </>
   )

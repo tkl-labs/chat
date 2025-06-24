@@ -71,3 +71,57 @@ export default function ChatSidebarSkeleton() {
     </div>
   )
 }
+
+export function FriendListSkeleton() {
+  return (
+    <div className="space-y-1">
+      <div className="px-2 py-1">
+        <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+      </div>
+      {[...Array(5)].map((_, index) => (
+        <div
+          key={`friend-${index}`}
+          className="flex items-center gap-2 px-2 py-2 rounded-md"
+        >
+          <div className="relative">
+            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse flex items-center justify-center"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded-full border-2 border-[var(--background)] animate-pulse"></div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function RequestsListSkeleton() {
+  return (
+    <div className="space-y-1">
+      <div className="px-2 py-1">
+        <div className="w-36 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+      </div>
+      {[...Array(5)].map((_, index) => (
+        <div
+          key={`request-${index}`}
+          className="flex items-center gap-2 px-2 py-2 rounded-md"
+        >
+          <div className="relative">
+            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse flex items-center justify-center" />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-1" />
+            <div className="h-3 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          <div className="flex gap-1">
+            <div className="w-6 h-6 rounded-md bg-gray-300 dark:bg-gray-600 animate-pulse" />
+            <div className="w-6 h-6 rounded-md bg-gray-300 dark:bg-gray-600 animate-pulse" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}

@@ -25,7 +25,11 @@ interface StoreNotification {
 class NotificationStore {
   private notifications: StoreNotification[] = []
 
-  addNotification(type: NotificationType, message: string, title?: string): string {
+  addNotification(
+    type: NotificationType,
+    message: string,
+    title?: string,
+  ): string {
     const id = Math.random().toString(36).substr(2, 9)
     const notification: StoreNotification = {
       id,
@@ -45,7 +49,7 @@ class NotificationStore {
   }
 
   removeNotification(id: string): void {
-    this.notifications = this.notifications.filter(n => n.id !== id)
+    this.notifications = this.notifications.filter((n) => n.id !== id)
   }
 
   clearNotifications(): void {
@@ -54,11 +58,13 @@ class NotificationStore {
 
   clearOldNotifications(maxAge: number): void {
     const now = Date.now()
-    this.notifications = this.notifications.filter(n => now - n.timestamp < maxAge)
+    this.notifications = this.notifications.filter(
+      (n) => now - n.timestamp < maxAge,
+    )
   }
 
   updateNotification(id: string, updates: Partial<StoreNotification>): void {
-    const index = this.notifications.findIndex(n => n.id === id)
+    const index = this.notifications.findIndex((n) => n.id === id)
     if (index !== -1) {
       this.notifications[index] = { ...this.notifications[index], ...updates }
     }
@@ -122,21 +128,18 @@ const Notification: React.FC<NotificationProps> = ({
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
         transform transition-all duration-300 ease-out, 
         ${getBackgroundColor()}
-        ${isAnimating && !isExiting 
-          ? 'translate-x-0 opacity-100 scale-100' 
-          : isExiting
-          ? 'translate-x-full opacity-0 scale-95'
-          : 'translate-x-full opacity-0 scale-95'
+        ${
+          isAnimating && !isExiting
+            ? 'translate-x-0 opacity-100 scale-100'
+            : isExiting
+              ? 'translate-x-full opacity-0 scale-95'
+              : 'translate-x-full opacity-0 scale-95'
         }
       `}
     >
       <div className="flex items-start gap-3">
-        {showIcon && (
-          <div className="flex-shrink-0 mt-0.5">
-            {getIcon()}
-          </div>
-        )}
-        
+        {showIcon && <div className="flex-shrink-0 mt-0.5">{getIcon()}</div>}
+
         <div className="flex-1 min-w-0">
           {title && (
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
@@ -159,11 +162,17 @@ const Notification: React.FC<NotificationProps> = ({
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/10 dark:bg-white/10 rounded-b-lg overflow-hidden">
-        <div 
+        <div
           className={`h-full transition-all duration-5000 ease-linear
-            ${type === 'success' ? 'bg-green-500' : 
-              type === 'error' ? 'bg-red-500' : 
-              type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'}
+            ${
+              type === 'success'
+                ? 'bg-green-500'
+                : type === 'error'
+                  ? 'bg-red-500'
+                  : type === 'warning'
+                    ? 'bg-yellow-500'
+                    : 'bg-blue-500'
+            }
             ${isAnimating ? 'w-0' : 'w-full'}
           `}
         />
@@ -200,9 +209,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     setNotifications(initialNotifications)
 
     // Animate in existing notifications
-    initialNotifications.forEach(notification => {
+    initialNotifications.forEach((notification) => {
       setTimeout(() => {
-        notificationStore.updateNotification(notification.id, { isAnimating: true })
+        notificationStore.updateNotification(notification.id, {
+          isAnimating: true,
+        })
         setNotifications(notificationStore.getNotifications())
       }, 100)
     })
@@ -229,7 +240,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const dismissAllNotifications = useCallback(() => {
     // Start exit animation for all notifications
     const currentNotifications = notificationStore.getNotifications()
-    currentNotifications.forEach(notification => {
+    currentNotifications.forEach((notification) => {
       notificationStore.updateNotification(notification.id, { isExiting: true })
     })
     setNotifications(notificationStore.getNotifications())
