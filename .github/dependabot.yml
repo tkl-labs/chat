@@ -3,26 +3,28 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
-version: 2
-updates:
-  # frontend Rust project
-  - package-ecosystem: 'cargo'
-    directory: '/src-tauri/' # location of cargo.toml
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-      time: '09:00'
-    commit-message:
-      prefix: 'chore'
-      include: 'scope' # Adds the package name to the commit scope
+# dependabot is currently paused on this repository
 
-  # frontend Next.JS project
-  - package-ecosystem: 'npm'
-    directory: '/' # location of package.json
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-      time: '09:00'
-    commit-message:
-      prefix: 'chore'
-      include: 'scope' # Adds the package name to the commit scope
+# version: 2
+# updates:
+#   # frontend Rust project
+#   - package-ecosystem: 'cargo'
+#     directory: '/src-tauri/' # location of cargo.toml
+#     schedule:
+#       interval: 'weekly'
+#       day: 'sunday'
+#       time: '09:00'
+#     commit-message:
+#       prefix: 'chore'
+#       include: 'scope' # Adds the package name to the commit scope
+
+#   # frontend Next.JS project
+#   - package-ecosystem: 'npm'
+#     directory: '/' # location of package.json
+#     schedule:
+#       interval: 'weekly'
+#       day: 'sunday'
+#       time: '09:00'
+#     commit-message:
+#       prefix: 'chore'
+#       include: 'scope' # Adds the package name to the commit scope
